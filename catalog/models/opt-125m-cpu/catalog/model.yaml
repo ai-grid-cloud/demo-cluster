@@ -1,0 +1,29 @@
+apiVersion: inference.opendatahub.io/v1alpha1
+kind: ExternalModel
+metadata:
+  labels:
+    ai-grid/model: opt-125m-cpu
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: opt-125m-cpu
+  namespace: models-as-a-service
+spec:
+  externalProviderRefs:
+  - apiFormat: openai-chat
+    path: /v1/chat/completions
+    ref:
+      name: grid-provider
+    targetModel: opt-125m-cpu
+    weight: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSModelRef
+metadata:
+  labels:
+    ai-grid/model: opt-125m-cpu
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: opt-125m-cpu
+  namespace: models-as-a-service
+spec:
+  modelRef:
+    kind: ExternalModel
+    name: opt-125m-cpu

@@ -2,7 +2,8 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   annotations:
-    ai-grid/version: "1"
+    ai-grid/version: "2"
+    openshift.io/description: ""
     openshift.io/display-name: uat-p1
   name: uat-p1
   namespace: models-as-a-service
@@ -11,7 +12,7 @@ spec:
   - name: uat-p1-opt
     namespace: models-as-a-service
     tokenRateLimits:
-    - limit: 2000
+    - limit: 3000
       window: 1m
   organization:
     id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
@@ -25,6 +26,7 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSAuthPolicy
 metadata:
   annotations:
+    openshift.io/description: ""
     openshift.io/display-name: uat-p1
   labels:
     ai-grid/subscription: uat-p1

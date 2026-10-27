@@ -2,7 +2,7 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   annotations:
-    ai-grid/version: "1"
+    ai-grid/version: "2"
   name: uat-p1b
   namespace: models-as-a-service
 spec:
@@ -10,7 +10,7 @@ spec:
   - name: uat-p1b-opt
     namespace: models-as-a-service
     tokenRateLimits:
-    - limit: 1000
+    - limit: 2000
       window: 1m
   organization:
     id: 6c0e9545-c68e-448e-bd38-a4cca32e963a

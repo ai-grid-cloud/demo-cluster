@@ -39,6 +39,17 @@
           "alias": "org2-idp"
         }
       ]
+    },
+    {
+      "id": "4f8f7064-3a78-4914-8187-fe4e8536a1f4",
+      "name": "org3",
+      "alias": "org3",
+      "enabled": true,
+      "domains": [
+        {
+          "name": "chris.example.com"
+        }
+      ]
     }
   ],
   "identityProviders": [

@@ -1,0 +1,31 @@
+apiVersion: inference.opendatahub.io/v1alpha1
+kind: ExternalModel
+metadata:
+  labels:
+    ai-grid/model: uat-p1b-opt
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: uat-p1b-opt
+  namespace: models-as-a-service
+spec:
+  externalProviderRefs:
+  - apiFormat: openai-chat
+    path: /v1/chat/completions
+    ref:
+      name: grid-provider
+    targetModel: uat-p1b-opt
+    weight: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSModelRef
+metadata:
+  annotations:
+    openshift.io/display-name: UAT p1b OPT
+  labels:
+    ai-grid/model: uat-p1b-opt
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: uat-p1b-opt
+  namespace: models-as-a-service
+spec:
+  modelRef:
+    kind: ExternalModel
+    name: uat-p1b-opt

@@ -1,31 +1,16 @@
-# site-a's grid consumer: its own model directly, and site-b through site-b's
-# provider gateway. As in the template's own deployment/clusters/*/rhoai.yaml.
-#
-# PLACEHOLDERS, both open:
-# - The local backend's cluster name is grid-<namespace>-<hash of the local
-#   LLMInferenceService's UID>, known only once the model exists
-#   (odh-model-controller PR 966 names providers that way).
-# - site-b's router hostname doesn't go in this public repository (README.md,
-#   "Hostnames").
+# site-a is the ingress spoke (ai-grid/role=ingress): no model is placed on it,
+# so its grid consumer has one backend, site-b through site-b's provider
+# gateway. Add a local backend here if site-a becomes combined and runs a model.
 praxis-gateway:
   praxisConfig:
     render:
       backends:
-        - cluster: grid-ai-grid-internal-models-UID-HASH-PLACEHOLDER
-          endpoints:
-            - MODEL-PLACEHOLDER-kserve-workload-svc.ai-grid-internal-models.svc.cluster.local.:8000
-          transport:
-            mode: tls
-            ca:
-              configMapName: openshift-service-ca.crt
-              key: service-ca.crt
-          # praxis refuses a name that resolves to a private address.
-          trustPrivate: true
-        # site-b's router. No SNI here, so the chart defaults it to
-        # site-b.grid.internal, which is also site-b's Route host.
+        # Any name under site-b's router wildcard reaches the router; the SNI,
+        # which the chart defaults to site-b.grid.internal, picks the provider
+        # gateway's passthrough Route.
         - cluster: peer-site-b
           site: site-b
           endpoints:
-            - site-b.apps.site-b.example.invalid:443
+            - site-b.apps.ocp.865h4.sandbox5343.opentlc.com:443
           transport:
             mode: mutual_tls

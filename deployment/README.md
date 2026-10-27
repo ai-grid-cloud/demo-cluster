@@ -1,44 +1,39 @@
 # Deployment values for demo1
 
 The values `ai-grid-cloud/ai-grid-tenant` (branch `cloud-provider`) reads for
-our clusters: hub `local-cluster` (demo1, no OpenShift AI), spokes `site-a`
-(combined) and `site-b` (inference). The layout is the template's
-`deployment/README.md`; bootstrap with:
+our demo clusters: hub `local-cluster` (demo1, unlabelled: no OpenShift AI),
+spokes `site-a` (`ai-grid/role=ingress`) and `site-b` (`inference`). The layout
+is the template's `deployment/README.md`. Bootstrap with:
 
 ```sh
-DEPLOYMENT_REPO_URL=https://github.com/ai-grid-cloud/demo-deployment.git \
+DEPLOYMENT_REPO_URL=https://github.com/ai-grid-cloud/demo-cluster.git \
 DEPLOYMENT_PATH=deployment \
 CATALOG_REPO_URL=https://github.com/ai-grid-cloud/demo-cluster.git \
+CATALOG_REVISION=main \
+CATALOG_IN_DEPLOYMENT_REPO=yes \
 ./bootstrap.sh
 ```
 
-This directory moves to `ai-grid-cloud/demo-deployment`, a private repository
-the provider console's git-writer token can't write (decision D4, accepted
-2026-10-27; Chris creates the repository). `catalog/` stays here in
-`demo-cluster`: the console's git writer commits models and subscriptions
-there.
+`catalog/` sits next to this directory: the provider console's git writer
+commits models and subscriptions there.
 
-## Not finished: placeholders
-
-This repository is public, so it carries no real hostnames. Three values are
-placeholders until that's decided:
-
-- `grid-enrollment.yaml`: the hub's enrollment Route host.
-- `clusters/site-a/rhoai.yaml`: site-b's router hostname, and the local
-  provider's name, which embeds a hash of the model's UID and is known only
-  after the model exists.
-- No Keycloak yet: its overlay (realm, hostnames) comes with the identity port.
-
-## Don't use this directory from this repository
+## Accepted risk: this repository is cluster-admin
 
 Argo CD applies these values with cluster-admin rights: the template's root
 ApplicationSet turns any `apps/*.yaml` here into an Application in project
-`default`, and applies `hub/` to the hub. The git writer's token can push to
-this repository, so anyone holding it would be cluster-admin on the hub and
-every spoke. Chris accepted a narrower risk on 2026-10-26 (realm and broker
-config here); this is broader, and it breaks the 2026-10-23 rule "nothing
-privileged in a repo the git-writer token can write".
+`default`. The console's git-writer token can push to this repository, so
+whoever holds it is cluster-admin on the hub and every spoke. The values also
+name the clusters' real hostnames, publicly.
 
-So this directory is a draft of the layout only. Before any cluster reads it,
-it moves to a repository the token can't write (decision D4 in the
-convergence plan). `cluster-admins.yaml` grants no one, either way.
+Chris accepted both for these demo clusters only (decision D4, 2026-10-27):
+they're throwaway clusters we can rebuild. It replaces the 2026-10-23 rule
+"nothing privileged in a repo the git-writer token can write" for them alone.
+Any other deployment, including ai-grid-1's, keeps its catalog in a separate
+repository, and `bootstrap.sh` refuses the same repository without
+`CATALOG_IN_DEPLOYMENT_REPO=yes`.
+
+## Open
+
+- site-a's grid consumer reaches only site-b, since no model is placed on
+  site-a. Placing one there needs site-a combined, a provider gateway file and
+  a local backend.

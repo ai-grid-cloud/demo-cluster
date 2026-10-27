@@ -1,3 +1,3 @@
-# PLACEHOLDER: the hub's real apps domain doesn't go in this public repository.
-# Where it lives is open (see README.md, "Hostnames").
-host: grid-enrollment.apps.hub.example.invalid
+# demo1's grid enrollment Route (apps/grid-enrollment). Public by D4: these are
+# throwaway demo clusters.
+host: grid-enrollment.apps.ocp.hf299.sandbox3324.opentlc.com

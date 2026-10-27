@@ -17,16 +17,15 @@ configMapGenerator:
     files:
       - realms/ai-grid-realm.json
 patches:
-  # Optional: pins Keycloak's host, so the issuer survives a rebuild (the
-  # template's keycloak-public-url Policy reads the Route's host back). Without
-  # it, OpenShift assigns keycloak-maas-db.<apps domain>. PLACEHOLDER host:
-  # this file's repository holds no real hostnames until it moves to
-  # ai-grid-cloud/demo-deployment.
+  # Pins Keycloak's host, so the issuer survives a rebuild (the template's
+  # keycloak-public-url Policy reads the Route's host back). demo1's current
+  # issuer host, so tokens and the AITenant keep their issuer through the
+  # switch-over (the old Keycloak's Route must go first).
   - target: { kind: Route, name: keycloak }
     patch: |-
       - op: add
         path: /spec/host
-        value: keycloak.apps.hub.example.invalid
+        value: sso.apps.ocp.hf299.sandbox3324.opentlc.com
   - target: { kind: ExternalSecret, name: keycloak-secrets }
     patch: |-
       - op: add

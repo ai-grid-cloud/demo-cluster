@@ -14,11 +14,12 @@ spec:
     targetRevision: HEAD
     path: apps/console
     kustomize:
-      # Until backend PR 29 (git mode) and console PR 63 merge: the priority 1
-      # builds in demo1's internal registry (env integration/demo1 e221e8c).
+      # Until backend PR 29 (git mode) and console PR 63 merge: the builds in
+      # demo1's internal registry (env integration/demo1 9eaa864: backend PR 29
+      # a0b2196, build ai-grid-backend-local-8; console PR 63 539835d).
       images:
         - ghcr.io/ai-grid-cloud/ai-grid-provider-console=image-registry.openshift-image-registry.svc:5000/ai-grid/ai-grid-provider-console@sha256:74d184b3f417c512672687cc8ccec7064fbc5c9fee09ba6fec47f58952ba9e8e
-        - ghcr.io/ai-grid-cloud/ai-grid-provider-backend=image-registry.openshift-image-registry.svc:5000/ai-grid/ai-grid-backend@sha256:1ba4259ff84cc76d69915935a2f0d9b3ae303c30f63f12526f7459b4aba940e1
+        - ghcr.io/ai-grid-cloud/ai-grid-provider-backend=image-registry.openshift-image-registry.svc:5000/ai-grid/ai-grid-backend@sha256:cd62be27779fd7020caa63409ce01cc3d4db6b99c90d5157f8978ba94c4bf30a
       patches:
         - target: { kind: Deployment, name: ai-grid-provider-console }
           patch: |
@@ -26,10 +27,8 @@ spec:
             - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GIT_URL, value: '@catalogRepoURL@' } }
             - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GIT_BRANCH, value: main } }
             - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GIT_TOKEN_FILE, value: /var/run/secrets/ai-grid-git/token } }
-            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_MODELS_NAMESPACE, value: ai-grid-internal-models } }
-            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GRID_NAMESPACE, value: redhat-ai-grid } }
-            - { op: test, path: /spec/template/spec/containers/1/name, value: bff }
-            - { op: add, path: /spec/template/spec/containers/1/env/-, value: { name: MODELS_NAMESPACE, value: models-as-a-service } }
+            # The namespaces (AI_GRID_MODELS_NAMESPACE, the BFF's MODELS_NAMESPACE)
+            # come from the template's apps/console.
             - op: add
               path: /spec/template/spec/containers/2/volumeMounts
               value: [{ name: ai-grid-git, mountPath: /var/run/secrets/ai-grid-git, readOnly: true }]

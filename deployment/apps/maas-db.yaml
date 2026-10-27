@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maas-db
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: '@templateRepoURL@'
+    targetRevision: HEAD
+    path: apps/maas-db/hub
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: maas-db
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 20
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 30m
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true

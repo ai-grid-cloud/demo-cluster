@@ -1,0 +1,46 @@
+# demo1's Keycloak: the template's apps/keycloak plus realm ai-grid (one
+# organization per tenant, each linked to its own IdP), hostnames and the
+# brokers' generated secrets. The tenant IdP realms (org1-idp, org2-idp) are
+# created by demo-tenants.sh through the admin API, with the broker secrets
+# this generates.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: maas-db
+resources:
+  - https://github.com/ai-grid-cloud/ai-grid-tenant//apps/keycloak?ref=cloud-provider
+  - broker-secrets.yaml
+configMapGenerator:
+  - name: keycloak-realm-import
+    options:
+      annotations:
+        argocd.argoproj.io/sync-wave: "2"
+    files:
+      - realms/ai-grid-realm.json
+patches:
+  # PLACEHOLDER host (this file's repository holds no real hostnames until it
+  # moves to ai-grid-cloud/demo-deployment). KEYCLOAK_PUBLIC_URL must match.
+  - target: { kind: Route, name: keycloak }
+    patch: |-
+      - { op: replace, path: /spec/host, value: keycloak.apps.hub.example.invalid }
+  - target: { kind: ExternalSecret, name: keycloak-secrets }
+    patch: |-
+      - { op: replace, path: /spec/target/template/data/KEYCLOAK_PUBLIC_URL, value: "https://keycloak.apps.hub.example.invalid" }
+      - op: add
+        path: /spec/dataFrom/-
+        value:
+          sourceRef: { generatorRef: { apiVersion: generators.external-secrets.io/v1alpha1, kind: Password, name: org1-broker-client-secret } }
+          rewrite: [{ regexp: { source: ^password$, target: ORG1_BROKER_SECRET } }]
+      - op: add
+        path: /spec/dataFrom/-
+        value:
+          sourceRef: { generatorRef: { apiVersion: generators.external-secrets.io/v1alpha1, kind: Password, name: org2-broker-client-secret } }
+          rewrite: [{ regexp: { source: ^password$, target: ORG2_BROKER_SECRET } }]
+  - target: { kind: Deployment, name: keycloak }
+    patch: |-
+      - { op: test, path: /spec/template/spec/initContainers/0/env/0/name, value: REALM_VARS }
+      - { op: replace, path: /spec/template/spec/initContainers/0/env/0/value, value: ORG1_BROKER_SECRET ORG2_BROKER_SECRET }
+      # The console creates organizations in realm ai-grid at runtime, and
+      # bootstrap adds portal callbacks to maas-cli: import only realms that
+      # don't exist yet, so a restart keeps them.
+      - { op: test, path: /spec/template/spec/containers/0/env/0/name, value: REALM_IMPORT_OVERRIDE }
+      - { op: replace, path: /spec/template/spec/containers/0/env/0/value, value: "false" }

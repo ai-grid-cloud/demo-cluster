@@ -1,0 +1,4 @@
+# Nobody is granted cluster-admin from git: this repository is writable by the
+# provider console's git writer. The deployer's own access comes from the
+# cluster (bootstrap), not from here.
+cluster_admins: []

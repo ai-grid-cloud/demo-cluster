@@ -1,0 +1,2 @@
+# site-b holds its enrolled identity, so it declares its own GridNetwork record.
+enabled: true

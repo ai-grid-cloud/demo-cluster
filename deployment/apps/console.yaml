@@ -1,0 +1,52 @@
+# The provider console on demo1, with the git writer: models and subscriptions are
+# commits to demo-cluster's catalog/ (CATALOG_REPO_URL). Secrets
+# ai-grid-provider-console-oauth, ai-grid-backend-keycloak and
+# ai-grid-backend-git come from bootstrap, never git.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: console
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: '@templateRepoURL@'
+    targetRevision: HEAD
+    path: apps/console
+    kustomize:
+      # Until backend PR 29 (git mode) and console PR 63 merge: the priority 1
+      # builds in demo1's internal registry (env integration/demo1 e221e8c).
+      images:
+        - ghcr.io/ai-grid-cloud/ai-grid-provider-console=image-registry.openshift-image-registry.svc:5000/ai-grid/ai-grid-provider-console@sha256:74d184b3f417c512672687cc8ccec7064fbc5c9fee09ba6fec47f58952ba9e8e
+        - ghcr.io/ai-grid-cloud/ai-grid-provider-backend=image-registry.openshift-image-registry.svc:5000/ai-grid/ai-grid-backend@sha256:1ba4259ff84cc76d69915935a2f0d9b3ae303c30f63f12526f7459b4aba940e1
+      patches:
+        - target: { kind: Deployment, name: ai-grid-provider-console }
+          patch: |
+            - { op: test, path: /spec/template/spec/containers/2/name, value: ai-grid-backend }
+            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GIT_URL, value: '@catalogRepoURL@' } }
+            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GIT_BRANCH, value: main } }
+            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GIT_TOKEN_FILE, value: /var/run/secrets/ai-grid-git/token } }
+            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_MODELS_NAMESPACE, value: ai-grid-internal-models } }
+            - { op: add, path: /spec/template/spec/containers/2/env/-, value: { name: AI_GRID_GRID_NAMESPACE, value: redhat-ai-grid } }
+            - { op: test, path: /spec/template/spec/containers/1/name, value: bff }
+            - { op: add, path: /spec/template/spec/containers/1/env/-, value: { name: MODELS_NAMESPACE, value: models-as-a-service } }
+            - op: add
+              path: /spec/template/spec/containers/2/volumeMounts
+              value: [{ name: ai-grid-git, mountPath: /var/run/secrets/ai-grid-git, readOnly: true }]
+            - op: add
+              path: /spec/template/spec/volumes/-
+              value: { name: ai-grid-git, secret: { secretName: ai-grid-backend-git, optional: true, defaultMode: 0440, items: [{ key: token, path: token }] } }
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ai-grid
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    retry:
+      refresh: true
+      limit: -1
+      backoff: { duration: 30s, factor: 2, maxDuration: 10m }
+    syncOptions:
+      - CreateNamespace=true
+      - SkipDryRunOnMissingResource=true

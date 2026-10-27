@@ -19,13 +19,15 @@ configMapGenerator:
 patches:
   # Pins Keycloak's host, so the issuer survives a rebuild (the template's
   # keycloak-public-url Policy reads the Route's host back). demo1's current
-  # issuer host, so tokens and the AITenant keep their issuer through the
-  # switch-over (the old Keycloak's Route must go first).
+  # tenant issuer host, the operator-managed maas-keycloak's, so tokens and the
+  # AITenant keep their issuer through the switch-over (that instance's Route
+  # must go first). Not sso.apps..., the hub's own OpenShift sign-in, which
+  # stays as it is.
   - target: { kind: Route, name: keycloak }
     patch: |-
       - op: add
         path: /spec/host
-        value: sso.apps.ocp.hf299.sandbox3324.opentlc.com
+        value: maas-keycloak-keycloak.apps.ocp.hf299.sandbox3324.opentlc.com
   - target: { kind: ExternalSecret, name: keycloak-secrets }
     patch: |-
       - op: add

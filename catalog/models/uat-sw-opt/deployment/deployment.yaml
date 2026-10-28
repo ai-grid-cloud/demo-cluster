@@ -1,0 +1,67 @@
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  annotations:
+    ai-grid/clusters: site-b
+    ai-grid/version: "1"
+  labels:
+    ai-grid/model: uat-sw-opt
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: uat-sw-opt
+  namespace: ai-grid-internal-models
+spec:
+  baseRefs:
+  - name: v3-6-0-kserve-config-llm-template-cpu
+  model:
+    name: uat-sw-opt
+    uri: hf://facebook/opt-125m
+  replicas: 1
+  router:
+    gateway:
+      refs:
+      - name: openshift-ai-inference
+        namespace: openshift-ingress
+    route: {}
+    scheduler: {}
+  template:
+    containers:
+    - env:
+      - name: VLLM_CPU_KVCACHE_SPACE
+        value: "1"
+      - name: VLLM_ADDITIONAL_ARGS
+        value: --chat-template '{% for m in messages %}{{`{{`}} m.content {{`}}`}}
+          {% endfor %}'
+      image: registry.redhat.io/rhaii/vllm-cpu-rhel9@sha256:578e9946e60a14596185937f6a083c1d42f3cff343b18648090b9ac80691d2e0
+      name: main
+      resources:
+        limits:
+          cpu: "2"
+          memory: 10Gi
+        requests:
+          cpu: "1"
+          memory: 8Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    ai-grid/model: uat-sw-opt
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: uat-sw-opt-grid
+  namespace: ai-grid-internal-models
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: redhat-ai-grid
+    ports:
+    - port: 8000
+      protocol: TCP
+    - port: 9090
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: uat-sw-opt
+  policyTypes:
+  - Ingress

@@ -54,7 +54,7 @@ spec:
       path: apps/console/manifests
   destination:
     server: https://kubernetes.default.svc
-    namespace: ai-grid
+    namespace: ai-grid-provider-console
   syncPolicy:
     automated:
       prune: true

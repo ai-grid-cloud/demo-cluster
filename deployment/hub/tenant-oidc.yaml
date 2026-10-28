@@ -1,8 +1,11 @@
 # The tenants' OIDC client, which the template's tenant Policy writes into
 # site-a's AITenant. maas-cli is the public client the CLI and the portal's
-# sign-in proxy share (MaaS matches the token's azp against it). No issuerUrl:
-# the issuer is this deployment's Keycloak, its Route's host plus
-# /realms/ai-grid.
+# sign-in proxy share (MaaS matches the token's azp against it).
+#
+# issuerUrl: for now, demo1's existing tenant Keycloak (the operator-managed
+# maas-keycloak in namespace keycloak), not the template's Keycloak app, which
+# this deployment doesn't run yet (apps/keycloak.yaml is held back). Remove it
+# when the template's Keycloak takes over the same host.
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -12,3 +15,4 @@ data:
   realm: ai-grid
   clientId: maas-cli
   audience: maas-cli
+  issuerUrl: https://maas-keycloak-keycloak.apps.ocp.hf299.sandbox3324.opentlc.com/realms/ai-grid

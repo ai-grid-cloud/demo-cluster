@@ -14,3 +14,42 @@ praxis-gateway:
             - site-b.apps.ocp.865h4.sandbox5343.opentlc.com:443
           transport:
             mode: mutual_tls
+# site-a's public MaaS entry point: maas.<apps domain>, through the passthrough
+# Route openshift-ingress/maas-gateway-route, with the gateway's own certificate
+# for that host only (Secret maas-gw-public-tls). A wildcard would let a browser
+# reuse the connection for other apps hosts, which the gateway answers with 404.
+# Listing the listeners replaces the template's list, so both are repeated.
+components:
+  aigateway:
+    modelsAsAService:
+      gateway:
+        spec:
+          listeners:
+            - name: http
+              port: 80
+              protocol: HTTP
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchExpressions:
+                      - key: kubernetes.io/metadata.name
+                        operator: In
+                        values: [openshift-ingress, models-as-a-service, redhat-ai-gateway-infra]
+            - name: https
+              port: 443
+              protocol: HTTPS
+              hostname: maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - kind: Secret
+                    name: maas-gw-public-tls
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchExpressions:
+                      - key: kubernetes.io/metadata.name
+                        operator: In
+                        values: [openshift-ingress, models-as-a-service, redhat-ai-gateway-infra]

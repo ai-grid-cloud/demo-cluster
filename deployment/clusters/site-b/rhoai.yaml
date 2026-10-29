@@ -1,11 +1,12 @@
 # Lab only. site-b serves granite-4-tiny, and odh-model-controller points its
 # InferenceProvider's metricsConfig at the llm-d EPP's metrics port, which is
-# plain HTTP. The grid operator sends its grid-model-client ServiceAccount token
-# over HTTP only when auth.allowPlaintext is set, and the controller sets it only
-# from this annotation's "metricsAllowPlaintext". Without it the provider stays
+# plain HTTP. The grid operator sends a bearer token over HTTP only when
+# auth.allowPlaintext is set, and the controller sets it only from this
+# annotation's "metricsAllowPlaintext". Without it the provider stays
 # Ready=False ScrapeFailed and the grid can't balance on load.
-# The token then crosses site-b's cluster network in clear text, which is
-# acceptable on this throwaway demo cluster only. The proper fix is a TLS
+# The token (a short-lived one for grid-operator-metrics-scraper, which may only
+# get /metrics; not grid-model-client's) then crosses site-b's cluster network
+# in clear text, which is acceptable on this throwaway demo cluster only. The proper fix is a TLS
 # metrics port on the EPP (odh-model-controller then uses https with the
 # service CA). The whole annotation is repeated because Helm replaces strings.
 components:

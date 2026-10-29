@@ -9,6 +9,9 @@ metadata:
   name: site-b
   labels:
     grid.hexfusion.io/declared-peer: "true"
+    # The provider console's InferenceProviders for models on site-b select
+    # their site by this label (catalog/models/<id>/catalog/grid.yaml).
+    ai-grid/site: site-b
   annotations:
     argocd.argoproj.io/sync-wave: "6"
 spec:

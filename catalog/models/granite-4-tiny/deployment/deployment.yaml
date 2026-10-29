@@ -3,7 +3,8 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
+    openshift.io/display-name: Granite 4 Tiny
   labels:
     ai-grid/model: granite-4-tiny
     app.kubernetes.io/managed-by: ai-grid-provider-backend
@@ -49,7 +50,7 @@ spec:
   - from:
     - namespaceSelector:
         matchLabels:
-          kubernetes.io/metadata.name: grid
+          kubernetes.io/metadata.name: redhat-ai-grid
     ports:
     - port: 8000
       protocol: TCP

@@ -3,6 +3,5 @@ kind: Kustomization
 resources:
 - ../../models/granite-4-tiny/deployment
 - ../../models/modelcar-granite-4-0-h-tiny-fp8-dynamic-second-try/deployment
-- ../../models/modelcar-granite-4-0-h-tiny-fp8-dynamic/deployment
 - ../../models/night2-opt/deployment
 - ../../models/smollm2-chat/deployment

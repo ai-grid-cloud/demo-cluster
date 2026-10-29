@@ -28,6 +28,9 @@ praxisConfig:
           mode: plaintext
         # praxis refuses a name that resolves to a private address.
         trustPrivate: true
+        # Plaintext to a cluster-local Service this deployment owns: the
+        # Gateway has no TLS listener, and the call never leaves the cluster.
+        allowPlaintextTrust: true
         # The Gateway answers /health with 404, so probe the port.
         healthCheck:
           type: tcp

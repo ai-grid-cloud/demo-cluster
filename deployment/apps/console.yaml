@@ -22,14 +22,15 @@ spec:
         releaseName: ai-grid-provider-console
         valuesObject:
           # By digest: tags can be overwritten. Console and chart are main
-          # 49ba2ac, backend main 3deed95.
+          # 49ba2ac. Backend: draft PR 47 (grid routing per model, head
+          # 9fea840), until it merges; then a sha- image from main.
           images:
             console:
               tag: sha-49ba2ac3cad3af5ac65797840a0df5a55570bd38
               digest: sha256:919dd237837b5311b5e5d653d95c65201a2fac38414f3950fa03da6d302518ab
             backend:
-              tag: sha-3deed95ebfd1a92b177863bfbb3659e18881e117
-              digest: sha256:9ab357ce95bbda733ae8471904e0d59b371418ee852afdc39146cea566e61106
+              tag: pr-47
+              digest: sha256:bb71c2e3bd9a741cd7ffe9630122ac9ff3c9f583fb18021925f038d64ed45e7f
             authProxy:
               tag: ""
               digest: sha256:1a5f6e220362aa2077026bb7e3091c38f80aac861fa060b08045e58e783d5bc5

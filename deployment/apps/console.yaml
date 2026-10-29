@@ -22,15 +22,18 @@ spec:
         releaseName: ai-grid-provider-console
         valuesObject:
           # By digest: tags can be overwritten. Chart is main 49ba2ac; the
-          # console image is draft PR 88 (Model API select) until it merges. Backend: draft PR 47 (grid routing per model, head
-          # 83b2cdd), until it merges; then a sha- image from main.
+          # console image is draft PR 88 (Model API select) until it merges. Backend: a carry
+          # build of cfchase:carry/grid-routing-objects at 83b2cdd (grid routing per model),
+          # pushed to this hub's own registry, because ghcr deletes a pr-N image when the PR
+          # moves on and PR 47 is now naming-only.
           images:
             console:
               tag: pr-88
               digest: sha256:0f143e159a43048edb6805a3c7747715e6704c947384cb34abc0362f98b9d50b
             backend:
-              tag: pr-47
-              digest: sha256:9909177eeb5b17d8d0bfe546cc0633c0be1ba9c584c542a4093f6add96d7c76e
+              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend
+              tag: carry-routing-83b2cdd
+              digest: sha256:562ee8327463400e7145a2dd1c2bf17b7961a61d677430e3810b747b62a96cc4
             authProxy:
               tag: ""
               digest: sha256:1a5f6e220362aa2077026bb7e3091c38f80aac861fa060b08045e58e783d5bc5

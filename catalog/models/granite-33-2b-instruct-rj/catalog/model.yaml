@@ -1,0 +1,32 @@
+apiVersion: inference.opendatahub.io/v1alpha1
+kind: ExternalModel
+metadata:
+  labels:
+    ai-grid/model: granite-33-2b-instruct-rj
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: granite-33-2b-instruct-rj
+  namespace: models-as-a-service
+spec:
+  externalProviderRefs:
+  - apiFormat: openai-chat
+    path: /v1/chat/completions
+    ref:
+      name: grid-provider
+    targetModel: granite-33-2b-instruct-rj
+    weight: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSModelRef
+metadata:
+  annotations:
+    openshift.io/description: RJ
+    openshift.io/display-name: granite-3.3-2b-instruct - RJ
+  labels:
+    ai-grid/model: granite-33-2b-instruct-rj
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: granite-33-2b-instruct-rj
+  namespace: models-as-a-service
+spec:
+  modelRef:
+    kind: ExternalModel
+    name: granite-33-2b-instruct-rj

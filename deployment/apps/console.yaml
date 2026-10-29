@@ -28,7 +28,10 @@ spec:
           # moves on and PR 47 is now naming-only.
           images:
             console:
-              tag: pr-88
+              # The same pr-88 digest, mirrored into this hub's registry so a
+              # push to or close of PR 88 can't delete it from under the demo.
+              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-console
+              tag: pr-88-0f143e1
               digest: sha256:0f143e159a43048edb6805a3c7747715e6704c947384cb34abc0362f98b9d50b
             backend:
               repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend

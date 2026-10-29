@@ -1,0 +1,20 @@
+apiVersion: grid.praxis.fast/v1alpha1
+kind: InferenceProvider
+metadata:
+  labels:
+    ai-grid/model: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: grid-modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2-at-site-b
+spec:
+  backendKind: local_model
+  clusterName: peer-site-b
+  endpoint: https://peer-site-b.grid.internal/v1
+  gridNetworkRef: grid
+  models:
+  - capabilities:
+    - text_generation
+    name: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+  providerKind: vllm
+  siteSelector:
+    matchLabels:
+      ai-grid/site: site-b

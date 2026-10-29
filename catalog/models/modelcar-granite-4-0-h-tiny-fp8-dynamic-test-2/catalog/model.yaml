@@ -1,0 +1,31 @@
+apiVersion: inference.opendatahub.io/v1alpha1
+kind: ExternalModel
+metadata:
+  labels:
+    ai-grid/model: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+  namespace: models-as-a-service
+spec:
+  externalProviderRefs:
+  - apiFormat: openai-chat
+    path: /v1/chat/completions
+    ref:
+      name: grid-provider
+    targetModel: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+    weight: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSModelRef
+metadata:
+  annotations:
+    openshift.io/display-name: modelcar-granite-4-0-h-tiny-fp8-dynamic test 2
+  labels:
+    ai-grid/model: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2
+  namespace: models-as-a-service
+spec:
+  modelRef:
+    kind: ExternalModel
+    name: modelcar-granite-4-0-h-tiny-fp8-dynamic-test-2

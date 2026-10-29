@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
 - ../models/granite-4-tiny/catalog
 - ../models/night2-opt/catalog
-- ../models/night2-smol2/catalog

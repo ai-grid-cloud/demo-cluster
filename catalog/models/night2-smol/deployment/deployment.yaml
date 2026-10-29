@@ -1,0 +1,61 @@
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  annotations:
+    ai-grid/api: chat
+    ai-grid/clusters: site-b
+    ai-grid/model-name: HuggingFaceTB/SmolLM2-135M-Instruct
+    ai-grid/version: "1"
+    openshift.io/display-name: SmolLM2 135M Instruct (night2)
+  labels:
+    ai-grid/model: night2-smol
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-smol
+  namespace: ai-grid-internal-models
+spec:
+  baseRefs:
+  - name: v3-6-0-kserve-config-llm-template-cpu
+  model:
+    name: night2-smol
+    uri: hf://HuggingFaceTB/SmolLM2-135M-Instruct
+  replicas: 1
+  router:
+    gateway:
+      refs:
+      - name: openshift-ai-inference
+        namespace: openshift-ingress
+    route: {}
+    scheduler: {}
+  template:
+    containers:
+    - image: registry.redhat.io/rhaii/vllm-cpu-rhel9@sha256:578e9946e60a14596185937f6a083c1d42f3cff343b18648090b9ac80691d2e0
+      name: main
+      resources:
+        requests:
+          cpu: "2"
+          memory: 8Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    ai-grid/model: night2-smol
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-smol-grid
+  namespace: ai-grid-internal-models
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: redhat-ai-grid
+    ports:
+    - port: 8000
+      protocol: TCP
+    - port: 9090
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: night2-smol
+  policyTypes:
+  - Ingress

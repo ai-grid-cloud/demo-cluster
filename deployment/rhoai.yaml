@@ -1,9 +1,0 @@
-# The rhai-on-openshift release on every site, after the template's
-# apps/rhoai/values.yaml and the role file.
-#
-# The chart renders grid-enrollment's Route check on every cluster, even where
-# enrollment is off, so it needs the host. demo1's hub runs no enrollment of
-# its own (grid-bootstrap issues identities), and no site enables it; this is
-# the hostname a labelled hub would use. Public by D4: throwaway demo clusters.
-grid-enrollment:
-  host: grid-enrollment.apps.ocp.hf299.sandbox3324.opentlc.com

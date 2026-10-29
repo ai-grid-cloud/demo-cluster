@@ -1,9 +1,9 @@
 # The hub's Redis for every ingress site's Limitador (the template's
 # apps/limitador-redis/manifests, upstream's shared rate-limit counters). Each
 # remote site's Limitador reaches it through Submariner; rhoai-prerequisites'
-# rhoai-limitador-redis Policy points it there. 20-limitador-storage.yaml is
-# left out: it configures the hub's own Limitador, and this hub runs no
-# OpenShift AI or Kuadrant.
+# rhoai-limitador-redis Policy points it there. 04-limitador-redis-secret.yaml
+# and 20-limitador-storage.yaml are left out: they configure the hub's own
+# Limitador, and this hub runs no OpenShift AI or Kuadrant.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -16,7 +16,7 @@ spec:
     targetRevision: HEAD
     path: apps/limitador-redis/manifests
     directory:
-      exclude: 20-limitador-storage.yaml
+      exclude: '{04-limitador-redis-secret.yaml,20-limitador-storage.yaml}'
   destination:
     server: https://kubernetes.default.svc
     namespace: limitador-redis

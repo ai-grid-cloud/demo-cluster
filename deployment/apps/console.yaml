@@ -41,12 +41,14 @@ spec:
               digest: sha256:5dc37f1a1e30927abe2dffbbfcb5a31ed8692cf498fb2684cca1b747b98b00a0
           console:
             # The Monitoring page: its tabs are the dashboard-* PersesDashboards in
-            # one project, here OpenShift AI's, served by the Cluster Observability
-            # Operator's Perses on the hub. demo1's hub runs no OpenShift AI, so the
-            # project has no dashboards here; ai-grid-1's does.
+            # one project, served by the Cluster Observability Operator's Perses on
+            # the hub. Here it's ai-grid-o11y, the template's hub o11y project, which
+            # holds kahowell's usage-logs dashboard dashboard-4-maas-usage-logs-admin
+            # (544fe0d, 94ee405, 5a1b04d). It has no data on demo1 yet: the usage-log
+            # pipeline (odh-gitops#234, the operator's 4266) isn't installed here.
             perses:
               url: https://perses.openshift-cluster-observability-operator.svc:8080
-              project: redhat-ods-monitoring
+              project: ai-grid-o11y
           backend:
             # Add to AI Grid and Remove patch ManagedCluster labels. The chart's
             # ValidatingAdmissionPolicy limits the backend to the ai-grid/* and

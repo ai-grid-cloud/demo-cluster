@@ -1,0 +1,73 @@
+# Vendored from lphiri/maas-portal-integration-poc deploy/maas-portal/22-payload-processing-bypass.yaml
+# at f163e02 (MIT License, Copyright (c) 2026 lphiri;
+# third-party/maas-portal-integration-poc.LICENSE), rendered with kustomize for
+# site-a's MaaS gateway, realm ai-grid and client maas-cli (parameters.env in
+# README.md in this directory).
+# TEMPORARY: remove this directory once a nightly that mounts the MaaS Portal on
+# the MaaS gateway itself (ai-gateway-controller PR 190, ODH-ADR-MS-0008)
+# reaches site-a, or the two will collide on /maas-portal and /oauth2.
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-payload-processing-bypass
+  namespace: openshift-ingress
+spec:
+  configPatches:
+  - applyTo: HTTP_ROUTE
+    match:
+      context: GATEWAY
+      routeConfiguration:
+        vhost:
+          route:
+            name: redhat-ods-applications.maas-consumer-ui.0
+    patch:
+      operation: MERGE
+      value:
+        typed_per_filter_config:
+          envoy.filters.http.ext_proc.ipp:
+            '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExtProcPerRoute
+            disabled: true
+          envoy.filters.http.ext_proc.ipp-pre:
+            '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExtProcPerRoute
+            disabled: true
+  - applyTo: HTTP_ROUTE
+    match:
+      context: GATEWAY
+      routeConfiguration:
+        vhost:
+          route:
+            name: redhat-ods-applications.maas-consumer-ui.1
+    patch:
+      operation: MERGE
+      value:
+        typed_per_filter_config:
+          envoy.filters.http.ext_proc.ipp:
+            '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExtProcPerRoute
+            disabled: true
+          envoy.filters.http.ext_proc.ipp-pre:
+            '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExtProcPerRoute
+            disabled: true
+  - applyTo: HTTP_ROUTE
+    match:
+      context: GATEWAY
+      routeConfiguration:
+        vhost:
+          route:
+            name: redhat-ods-applications.maas-consumer-oauth2.0
+    patch:
+      operation: MERGE
+      value:
+        typed_per_filter_config:
+          envoy.filters.http.ext_proc.ipp:
+            '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExtProcPerRoute
+            disabled: true
+          envoy.filters.http.ext_proc.ipp-pre:
+            '@type': type.googleapis.com/envoy.extensions.filters.http.ext_proc.v3.ExtProcPerRoute
+            disabled: true
+  priority: 20
+  workloadSelector:
+    labels:
+      gateway.networking.k8s.io/gateway-name: maas-default-gateway

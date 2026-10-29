@@ -1,0 +1,52 @@
+# Vendored from lphiri/maas-portal-integration-poc deploy/maas-portal/24-token-rate-exemptions.yaml
+# at f163e02 (MIT License, Copyright (c) 2026 lphiri;
+# third-party/maas-portal-integration-poc.LICENSE), rendered with kustomize for
+# site-a's MaaS gateway, realm ai-grid and client maas-cli (parameters.env in
+# README.md in this directory).
+# TEMPORARY: remove this directory once a nightly that mounts the MaaS Portal on
+# the MaaS gateway itself (ai-gateway-controller PR 190, ODH-ADR-MS-0008)
+# reaches site-a, or the two will collide on /maas-portal and /oauth2.
+---
+apiVersion: kuadrant.io/v1alpha1
+kind: TokenRateLimitPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-oauth2-non-inference
+  namespace: redhat-ods-applications
+spec:
+  defaults:
+    limits:
+      non-inference:
+        rates:
+        - limit: 0
+          window: 1m
+        when:
+        - predicate: "false"
+    strategy: atomic
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: maas-consumer-oauth2
+---
+apiVersion: kuadrant.io/v1alpha1
+kind: TokenRateLimitPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-ui-non-inference
+  namespace: redhat-ods-applications
+spec:
+  defaults:
+    limits:
+      non-inference:
+        rates:
+        - limit: 0
+          window: 1m
+        when:
+        - predicate: "false"
+    strategy: atomic
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: maas-consumer-ui

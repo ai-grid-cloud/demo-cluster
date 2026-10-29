@@ -1,8 +1,8 @@
 # site-b declared to site-a's grid by hand, as the reference template declares
-# its peer (deployment/clusters/local-cluster/manifests/declared-peer-ai-grid-2.yaml):
-# a provider learns a peer's models only through gossip, which doesn't run
-# between these clusters. One InferenceProvider per model site-b serves; a model
-# the console places on site-b isn't routed from site-a until it's listed here.
+# its peer (deployment/clusters/local-cluster/manifests/declared-peer-ai-grid-2.yaml).
+# The models site-b serves come from the provider console's catalog: an
+# InferenceProvider grid-<model>-at-site-b per model, which selects this
+# GridSite by its ai-grid/site label (catalog/models/<id>/catalog/grid.yaml).
 apiVersion: grid.praxis.fast/v1alpha1
 kind: GridSite
 metadata:
@@ -16,25 +16,3 @@ metadata:
     argocd.argoproj.io/sync-wave: "6"
 spec:
   gridNetworkRef: grid
----
-# clusterName matches the backend site-a's consumer gateway declares for site-b
-# (clusters/site-a/rhoai.yaml).
-apiVersion: grid.praxis.fast/v1alpha1
-kind: InferenceProvider
-metadata:
-  name: peer-site-b-granite-4-tiny
-  annotations:
-    argocd.argoproj.io/sync-wave: "6"
-spec:
-  gridNetworkRef: grid
-  providerKind: vllm
-  backendKind: local_model
-  clusterName: peer-site-b
-  endpoint: https://site-b.apps.ocp.865h4.sandbox5343.opentlc.com:443/v1
-  siteSelector:
-    matchLabels:
-      grid.hexfusion.io/declared-peer: "true"
-  models:
-    - name: granite-4-tiny
-      capabilities:
-        - text_generation

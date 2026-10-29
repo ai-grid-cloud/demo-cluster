@@ -23,14 +23,14 @@ spec:
         valuesObject:
           # By digest: tags can be overwritten. Console and chart are main
           # 49ba2ac. Backend: draft PR 47 (grid routing per model, head
-          # 9fea840), until it merges; then a sha- image from main.
+          # 83b2cdd), until it merges; then a sha- image from main.
           images:
             console:
               tag: sha-49ba2ac3cad3af5ac65797840a0df5a55570bd38
               digest: sha256:919dd237837b5311b5e5d653d95c65201a2fac38414f3950fa03da6d302518ab
             backend:
               tag: pr-47
-              digest: sha256:bb71c2e3bd9a741cd7ffe9630122ac9ff3c9f583fb18021925f038d64ed45e7f
+              digest: sha256:9909177eeb5b17d8d0bfe546cc0633c0be1ba9c584c542a4093f6add96d7c76e
             authProxy:
               tag: ""
               digest: sha256:1a5f6e220362aa2077026bb7e3091c38f80aac861fa060b08045e58e783d5bc5

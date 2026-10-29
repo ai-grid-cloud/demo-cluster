@@ -21,13 +21,13 @@ spec:
       helm:
         releaseName: ai-grid-provider-console
         valuesObject:
-          # By digest: tags can be overwritten. Console and chart are main
-          # 49ba2ac. Backend: draft PR 47 (grid routing per model, head
+          # By digest: tags can be overwritten. Chart is main 49ba2ac; the
+          # console image is draft PR 88 (Model API select) until it merges. Backend: draft PR 47 (grid routing per model, head
           # 83b2cdd), until it merges; then a sha- image from main.
           images:
             console:
-              tag: sha-49ba2ac3cad3af5ac65797840a0df5a55570bd38
-              digest: sha256:919dd237837b5311b5e5d653d95c65201a2fac38414f3950fa03da6d302518ab
+              tag: pr-88
+              digest: sha256:0f143e159a43048edb6805a3c7747715e6704c947384cb34abc0362f98b9d50b
             backend:
               tag: pr-47
               digest: sha256:9909177eeb5b17d8d0bfe546cc0633c0be1ba9c584c542a4093f6add96d7c76e

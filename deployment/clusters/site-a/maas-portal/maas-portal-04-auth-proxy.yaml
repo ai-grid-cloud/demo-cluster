@@ -20,6 +20,10 @@
 # - The cookie secret comes from Secret maas-consumer-auth-proxy-creds, which
 #   the hub's ACM Policy maas-portal-proxy-secret generates on site-a
 #   (deployment/hub/maas-portal-proxy-secret.yaml); it never enters git.
+# - --scope=openid only: maas-cli has no email or profile client scope, so
+#   Keycloak refused the bundle's "openid email profile" (invalid_scope). The
+#   client's default scopes still put groups, email, preferred_username and the
+#   MaaS organizations claim in the token.
 ---
 apiVersion: v1
 kind: Service
@@ -72,7 +76,7 @@ spec:
         - --oidc-issuer-url=https://maas-keycloak-keycloak.apps.ocp.hf299.sandbox3324.opentlc.com/realms/ai-grid
         - --client-id=maas-cli
         - --code-challenge-method=S256
-        - --scope=openid email profile
+        - --scope=openid
         - --oidc-email-claim=email
         - --oidc-groups-claim=groups
         - --use-system-trust-store=true

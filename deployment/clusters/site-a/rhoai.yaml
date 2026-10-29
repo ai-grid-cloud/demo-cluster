@@ -19,7 +19,20 @@ praxis-gateway:
 # for that host only (Secret maas-gw-public-tls). A wildcard would let a browser
 # reuse the connection for other apps hosts, which the gateway answers with 404.
 # Listing the listeners replaces the template's list, so both are repeated.
+# redhat-ods-applications is listed for the MaaS Portal's routes (maas-portal/,
+# temporary): they sit in the portal Service's namespace.
 components:
+  # The MaaS Portal (Org UI) on site-a, Managed; its sign-in and routes on this
+  # gateway are clusters/site-a/maas-portal/ (temporary). The template still sets
+  # the DSC v2 flat key, which the chart refuses next to the DSC v3 children,
+  # so null deletes it and standard keeps today's core dashboard.
+  dashboard:
+    dsc:
+      managementState: null
+      standard:
+        managementState: Managed
+      maasPortal:
+        managementState: Managed
   aigateway:
     modelsAsAService:
       gateway:
@@ -35,7 +48,7 @@ components:
                     matchExpressions:
                       - key: kubernetes.io/metadata.name
                         operator: In
-                        values: [openshift-ingress, models-as-a-service, redhat-ai-gateway-infra]
+                        values: [openshift-ingress, models-as-a-service, redhat-ai-gateway-infra, redhat-ods-applications]
             - name: https
               port: 443
               protocol: HTTPS
@@ -52,4 +65,4 @@ components:
                     matchExpressions:
                       - key: kubernetes.io/metadata.name
                         operator: In
-                        values: [openshift-ingress, models-as-a-service, redhat-ai-gateway-infra]
+                        values: [openshift-ingress, models-as-a-service, redhat-ai-gateway-infra, redhat-ods-applications]

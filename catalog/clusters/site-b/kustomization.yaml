@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
 - ../../models/granite-33-2b-instruct-rj/deployment
 - ../../models/granite-4-tiny/deployment
+- ../../models/idcheck-1955/deployment
 - ../../models/night2-opt/deployment
 - ../../models/smollm2-chat/deployment

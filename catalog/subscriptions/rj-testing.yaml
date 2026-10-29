@@ -1,0 +1,43 @@
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSSubscription
+metadata:
+  annotations:
+    ai-grid/version: "1"
+    openshift.io/description: test subscription descriptions
+    openshift.io/display-name: rj-testing
+  name: rj-testing
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: granite-4-tiny
+    namespace: models-as-a-service
+    tokenRateLimits:
+    - limit: 1000
+      window: 1h
+  organization:
+    id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
+  owner:
+    groups:
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    users: []
+  priority: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSAuthPolicy
+metadata:
+  annotations:
+    openshift.io/description: test subscription descriptions
+    openshift.io/display-name: rj-testing
+  labels:
+    ai-grid/subscription: rj-testing
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: rj-testing-policy
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: granite-4-tiny
+    namespace: models-as-a-service
+  subjects:
+    groups:
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    users: []

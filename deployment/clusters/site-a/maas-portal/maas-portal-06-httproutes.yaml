@@ -1,0 +1,92 @@
+# Vendored from lphiri/maas-portal-integration-poc deploy/maas-portal/06-httproutes.yaml
+# at f163e02 (MIT License, Copyright (c) 2026 lphiri;
+# third-party/maas-portal-integration-poc.LICENSE), rendered with kustomize for
+# site-a's MaaS gateway, realm ai-grid and client maas-cli (parameters.env in
+# README.md in this directory).
+# TEMPORARY: remove this directory once a nightly that mounts the MaaS Portal on
+# the MaaS gateway itself (ai-gateway-controller PR 190, ODH-ADR-MS-0008)
+# reaches site-a, or the two will collide on /maas-portal and /oauth2.
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-oauth2
+  namespace: redhat-ods-applications
+spec:
+  hostnames:
+  - maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+  parentRefs:
+  - name: maas-default-gateway
+    namespace: openshift-ingress
+    sectionName: https
+  rules:
+  - backendRefs:
+    - name: maas-consumer-auth-proxy
+      port: 4180
+    matches:
+    - path:
+        type: PathPrefix
+        value: /oauth2
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-ui
+  namespace: redhat-ods-applications
+spec:
+  hostnames:
+  - maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+  parentRefs:
+  - name: maas-default-gateway
+    namespace: openshift-ingress
+    sectionName: https
+  rules:
+  - filters:
+    - requestRedirect:
+        path:
+          replaceFullPath: /maas-portal/
+          type: ReplaceFullPath
+        statusCode: 302
+      type: RequestRedirect
+    matches:
+    - path:
+        type: Exact
+        value: /maas-portal
+  - backendRefs:
+    - name: maas-portal
+      port: 8443
+    filters:
+    - type: URLRewrite
+      urlRewrite:
+        path:
+          replacePrefixMatch: /
+          type: ReplacePrefixMatch
+    - requestHeaderModifier:
+        remove:
+        - x-auth-request-preferred-username
+        - x-auth-request-groups
+        - x-auth-request-access-token
+        - x-forwarded-user
+        - x-forwarded-email
+        - x-forwarded-groups
+        - x-forwarded-preferred-username
+        - x-maas-username
+        - x-maas-group
+        - x-maas-orgid
+        - x-maas-roles
+        - x-maas-keyname
+        - x-maas-subscription-rate-limit-id
+      type: RequestHeaderModifier
+    - responseHeaderModifier:
+        set:
+        - name: Cache-Control
+          value: no-store
+      type: ResponseHeaderModifier
+    matches:
+    - path:
+        type: PathPrefix
+        value: /maas-portal

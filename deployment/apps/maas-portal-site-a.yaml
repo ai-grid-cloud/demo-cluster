@@ -1,0 +1,34 @@
+# The MaaS Portal's sign-in proxy, routes and Authorino rules on site-a's MaaS
+# gateway (clusters/site-a/maas-portal/, temporary: see its README.md). The DSC
+# side (dashboard.maasPortal) is clusters/site-a/rhoai.yaml; the cookie secret
+# is hub/maas-portal-proxy-secret.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: maas-portal-site-a
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: '@deploymentRepoURL@'
+    targetRevision: '@deploymentRevision@'
+    path: '@deploymentPath@/clusters/site-a/maas-portal'
+    directory:
+      include: '*.yaml'
+  destination:
+    # site-a's Argo CD cluster, through ACM's cluster proxy (as rhoai-site-a).
+    server: https://cluster-proxy-addon-user.multicluster-engine.svc.cluster.local:9092/site-a
+    namespace: redhat-ods-applications
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 10
+      backoff:
+        duration: 30s
+        factor: 2
+        maxDuration: 10m
+    syncOptions:
+      # The portal's Service exists only once the DSC change has rolled out.
+      - SkipDryRunOnMissingResource=true

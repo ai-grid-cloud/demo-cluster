@@ -1,0 +1,25 @@
+# Vendored from lphiri/maas-portal-integration-poc deploy/maas-portal/23-backend-tls.yaml
+# at f163e02 (MIT License, Copyright (c) 2026 lphiri;
+# third-party/maas-portal-integration-poc.LICENSE), rendered with kustomize for
+# site-a's MaaS gateway, realm ai-grid and client maas-cli (parameters.env in
+# README.md in this directory).
+# TEMPORARY: remove this directory once a nightly that mounts the MaaS Portal on
+# the MaaS gateway itself (ai-gateway-controller PR 190, ODH-ADR-MS-0008)
+# reaches site-a, or the two will collide on /maas-portal and /oauth2.
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-portal-backend-tls
+  namespace: openshift-ingress
+spec:
+  host: maas-portal.redhat-ods-applications.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+    - port:
+        number: 8443
+      tls:
+        insecureSkipVerify: true
+        mode: SIMPLE

@@ -1,0 +1,132 @@
+# Vendored from lphiri/maas-portal-integration-poc deploy/maas-portal/04-auth-proxy.yaml
+# at f163e02 (MIT License, Copyright (c) 2026 lphiri;
+# third-party/maas-portal-integration-poc.LICENSE), rendered with kustomize for
+# site-a's MaaS gateway, realm ai-grid and client maas-cli (parameters.env in
+# README.md in this directory).
+# TEMPORARY: remove this directory once a nightly that mounts the MaaS Portal on
+# the MaaS gateway itself (ai-gateway-controller PR 190, ODH-ADR-MS-0008)
+# reaches site-a, or the two will collide on /maas-portal and /oauth2.
+#
+# Edits for demo1 (beyond parameters):
+# - Signs in with realm ai-grid's public client maas-cli using PKCE
+#   (--client-id, --code-challenge-method=S256). The proxy insists on a client
+#   secret; Keycloak ignores the one a public client sends, so
+#   OAUTH2_PROXY_CLIENT_SECRET is a placeholder, not a credential.
+# - No --provider-ca-file and no oidc-ca volume: the hub's issuer has a
+#   publicly trusted certificate, so the system trust store is enough.
+# - Image: the kube-auth-proxy digest already running on site-a against this
+#   same issuer and client with PKCE (the env's earlier portal proxy, 2026-10-22),
+#   not the bundle's, which is from another cluster's catalog.
+# - The cookie secret comes from Secret maas-consumer-auth-proxy-creds, which
+#   the hub's ACM Policy maas-portal-proxy-secret generates on site-a
+#   (deployment/hub/maas-portal-proxy-secret.yaml); it never enters git.
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: maas-consumer-auth-proxy
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-auth-proxy
+  namespace: redhat-ods-applications
+spec:
+  ports:
+  - name: http
+    port: 4180
+    targetPort: 4180
+  - name: metrics
+    port: 9000
+    targetPort: 9000
+  selector:
+    app: maas-consumer-auth-proxy
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: maas-consumer-auth-proxy
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-auth-proxy
+  namespace: redhat-ods-applications
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: maas-consumer-auth-proxy
+  template:
+    metadata:
+      labels:
+        app: maas-consumer-auth-proxy
+    spec:
+      containers:
+      - args:
+        - --http-address=0.0.0.0:4180
+        - --metrics-address=0.0.0.0:9000
+        - --reverse-proxy=true
+        - --email-domain=*
+        - --upstream=static://200
+        - --skip-provider-button
+        - --pass-access-token=true
+        - --set-xauthrequest=true
+        - --provider=oidc
+        - --oidc-issuer-url=https://maas-keycloak-keycloak.apps.ocp.hf299.sandbox3324.opentlc.com/realms/ai-grid
+        - --client-id=maas-cli
+        - --code-challenge-method=S256
+        - --scope=openid email profile
+        - --oidc-email-claim=email
+        - --oidc-groups-claim=groups
+        - --use-system-trust-store=true
+        - --ssl-insecure-skip-verify=false
+        - --redirect-url=https://maas.apps.ocp.bclkw.sandbox2619.opentlc.com/oauth2/callback
+        - --cookie-domain=maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+        - --cookie-name=_maas_consumer_proxy
+        - --cookie-expire=24h0m0s
+        - --cookie-refresh=4m0s
+        - --cookie-secure=true
+        - --cookie-httponly=true
+        - --cookie-samesite=lax
+        env:
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          value: public-client
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: OAUTH2_PROXY_COOKIE_SECRET
+              name: maas-consumer-auth-proxy-creds
+        image: registry.redhat.io/rhoai/odh-kube-auth-proxy-rhel9@sha256:8792522102e03b3272af56d61c899c65ff3b3ef36647e5b24d51b3dc0547bf95
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+        name: oauth-proxy
+        ports:
+        - containerPort: 4180
+          name: http
+        - containerPort: 9000
+          name: metrics
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+        resources:
+          limits:
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp
+      serviceAccountName: maas-consumer-auth-proxy
+      volumes:
+      - emptyDir:
+          medium: Memory
+          sizeLimit: 10Mi
+        name: tmp

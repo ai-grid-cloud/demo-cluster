@@ -4,8 +4,9 @@ metadata:
   annotations:
     ai-grid/api: completions
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
-    openshift.io/display-name: OPT 125m (night2)
+    ai-grid/model-name: facebook/opt-125m
+    ai-grid/version: "2"
+    openshift.io/display-name: OPT 125m (night2, completions)
   labels:
     ai-grid/model: night2-opt
     app.kubernetes.io/managed-by: ai-grid-provider-backend
@@ -15,7 +16,7 @@ spec:
   baseRefs:
   - name: v3-6-0-kserve-config-llm-template-cpu
   model:
-    name: facebook/opt-125m
+    name: night2-opt
     uri: hf://facebook/opt-125m
   replicas: 1
   router:

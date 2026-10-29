@@ -13,7 +13,7 @@ spec:
   models:
   - capabilities:
     - text_generation
-    name: facebook/opt-125m
+    name: night2-opt
   providerKind: vllm
   siteSelector:
     matchLabels:

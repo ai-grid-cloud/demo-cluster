@@ -22,7 +22,7 @@ spec:
     - headers:
       - name: X-Gateway-Model-Name
         type: Exact
-        value: facebook/opt-125m
+        value: night2-opt
       path:
         type: PathPrefix
         value: /v1/
@@ -45,5 +45,5 @@ spec:
   models:
   - capabilities:
     - text_generation
-    name: facebook/opt-125m
+    name: night2-opt
   providerKind: vllm

@@ -12,7 +12,7 @@ spec:
     path: /v1/completions
     ref:
       name: grid-provider
-    targetModel: facebook/opt-125m
+    targetModel: night2-opt
     weight: 1
 ---
 apiVersion: maas.opendatahub.io/v1alpha1
@@ -20,7 +20,7 @@ kind: MaaSModelRef
 metadata:
   annotations:
     ai-grid/api: completions
-    openshift.io/display-name: OPT 125m (night2)
+    openshift.io/display-name: OPT 125m (night2, completions)
   labels:
     ai-grid/model: night2-opt
     app.kubernetes.io/managed-by: ai-grid-provider-backend

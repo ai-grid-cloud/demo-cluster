@@ -4,5 +4,4 @@ resources:
 - ../models/granite-4-tiny/catalog
 - ../models/modelcar-granite-4-0-h-tiny-fp8-dynamic/catalog
 - ../models/night2-opt/catalog
-- ../models/rehearsal-chat-1829/catalog
 - ../models/smollm2-chat/catalog

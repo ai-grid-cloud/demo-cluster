@@ -6,6 +6,11 @@
 # TEMPORARY: remove this directory once a nightly that mounts the MaaS Portal on
 # the MaaS gateway itself (ai-gateway-controller PR 190, ODH-ADR-MS-0008)
 # reaches site-a, or the two will collide on /maas-portal and /oauth2.
+# Edit for demo1: verify the portal's certificate instead of the bundle's
+# insecureSkipVerify. The portal Service's certificate comes from the OpenShift
+# service CA (serving-cert-secret-name maas-portal-tls), and every pod's
+# service-account volume carries that CA as service-ca.crt, so the gateway pod
+# reads it from its own filesystem; sni is a name in the certificate's SANs.
 ---
 apiVersion: networking.istio.io/v1
 kind: DestinationRule
@@ -21,5 +26,7 @@ spec:
     - port:
         number: 8443
       tls:
-        insecureSkipVerify: true
         mode: SIMPLE
+        insecureSkipVerify: false
+        caCertificates: /var/run/secrets/kubernetes.io/serviceaccount/service-ca.crt
+        sni: maas-portal.redhat-ods-applications.svc

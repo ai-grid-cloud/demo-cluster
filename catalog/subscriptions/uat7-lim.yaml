@@ -1,0 +1,38 @@
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSSubscription
+metadata:
+  annotations:
+    ai-grid/version: "1"
+  name: uat7-lim
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: granite-4-tiny
+    namespace: models-as-a-service
+    tokenRateLimits:
+    - limit: 30
+      window: 5m
+  organization:
+    id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
+  owner:
+    groups:
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    users: []
+  priority: 2
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSAuthPolicy
+metadata:
+  labels:
+    ai-grid/subscription: uat7-lim
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: uat7-lim-policy
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: granite-4-tiny
+    namespace: models-as-a-service
+  subjects:
+    groups:
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    users: []

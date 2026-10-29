@@ -59,15 +59,16 @@ oidcGroupsClaim=groups
 oidcEmailClaim=email
 ```
 
-Edits beyond the parameters, all in `maas-portal-04-auth-proxy.yaml` (its header
-says why): PKCE with the public client and a placeholder client secret; no
-private CA mount, so the `maas-consumer-oidc-ca` ConfigMap isn't generated; the
-proxy image digest; the cookie secret from the Policy's Secret. The parameters
-ConfigMap isn't applied: nothing reads it at run time.
+Edits beyond the parameters (each file's header says why):
+`maas-portal-04-auth-proxy.yaml` signs in with the public client using PKCE and a
+placeholder client secret, has no private CA mount (so the `maas-consumer-oidc-ca`
+ConfigMap isn't generated), pins the proxy image digest and takes the cookie secret
+from the Policy's Secret; `maas-portal-23-backend-tls.yaml` verifies the portal's
+certificate against the OpenShift service CA instead of `insecureSkipVerify`. The
+parameters ConfigMap isn't applied: nothing reads it at run time.
 
-Taken as is otherwise, including the 4-minute session refresh, the
-DestinationRule's `insecureSkipVerify` to the portal and the public `/oauth2/*`
-path. A temporary route isn't the place to harden.
+Taken as is otherwise, including the 4-minute session refresh and the public
+`/oauth2/*` path. A temporary route isn't the place to harden.
 
 ## Temporary
 

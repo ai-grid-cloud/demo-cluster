@@ -1,0 +1,32 @@
+apiVersion: inference.opendatahub.io/v1alpha1
+kind: ExternalModel
+metadata:
+  labels:
+    ai-grid/model: night2-smol2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-smol2
+  namespace: models-as-a-service
+spec:
+  externalProviderRefs:
+  - apiFormat: openai-chat
+    path: /v1/chat/completions
+    ref:
+      name: grid-provider
+    targetModel: night2-smol2
+    weight: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSModelRef
+metadata:
+  annotations:
+    ai-grid/api: chat
+    openshift.io/display-name: SmolLM2 135M Instruct (night2)
+  labels:
+    ai-grid/model: night2-smol2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-smol2
+  namespace: models-as-a-service
+spec:
+  modelRef:
+    kind: ExternalModel
+    name: night2-smol2

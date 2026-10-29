@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - ../../models/granite-4-tiny/deployment
 - ../../models/night2-opt/deployment
+- ../../models/night2-smol2/deployment

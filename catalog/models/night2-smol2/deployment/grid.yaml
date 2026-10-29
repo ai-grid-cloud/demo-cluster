@@ -1,0 +1,49 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  labels:
+    ai-grid/model: night2-smol2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-smol2-grid
+  namespace: ai-grid-internal-models
+spec:
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: ai-grid-models
+    namespace: openshift-ingress
+  rules:
+  - backendRefs:
+    - group: inference.networking.k8s.io
+      kind: InferencePool
+      name: night2-smol2-inference-pool
+      port: 8000
+    matches:
+    - headers:
+      - name: X-Gateway-Model-Name
+        type: Exact
+        value: night2-smol2
+      path:
+        type: PathPrefix
+        value: /v1/
+    timeouts:
+      backendRequest: 0s
+      request: 0s
+---
+apiVersion: grid.praxis.fast/v1alpha1
+kind: InferenceProvider
+metadata:
+  labels:
+    ai-grid/model: night2-smol2
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: grid-night2-smol2-local
+spec:
+  backendKind: local_model
+  clusterName: local-models
+  endpoint: https://local-models.grid.internal/v1
+  gridNetworkRef: grid
+  models:
+  - capabilities:
+    - text_generation
+    name: night2-smol2
+  providerKind: vllm

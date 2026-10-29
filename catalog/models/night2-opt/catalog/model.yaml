@@ -1,0 +1,32 @@
+apiVersion: inference.opendatahub.io/v1alpha1
+kind: ExternalModel
+metadata:
+  labels:
+    ai-grid/model: night2-opt
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-opt
+  namespace: models-as-a-service
+spec:
+  externalProviderRefs:
+  - apiFormat: openai-chat
+    path: /v1/completions
+    ref:
+      name: grid-provider
+    targetModel: facebook/opt-125m
+    weight: 1
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSModelRef
+metadata:
+  annotations:
+    ai-grid/api: completions
+    openshift.io/display-name: OPT 125m (night2)
+  labels:
+    ai-grid/model: night2-opt
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: night2-opt
+  namespace: models-as-a-service
+spec:
+  modelRef:
+    kind: ExternalModel
+    name: night2-opt

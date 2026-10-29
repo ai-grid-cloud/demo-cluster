@@ -2,7 +2,7 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   annotations:
-    ai-grid/version: "2"
+    ai-grid/version: "3"
   name: uat7-sub
   namespace: models-as-a-service
 spec:
@@ -16,7 +16,7 @@ spec:
     id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
   owner:
     groups:
-    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group2
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
     users: []
   priority: 1
 ---
@@ -34,5 +34,5 @@ spec:
     namespace: models-as-a-service
   subjects:
     groups:
-    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group2
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
     users: []

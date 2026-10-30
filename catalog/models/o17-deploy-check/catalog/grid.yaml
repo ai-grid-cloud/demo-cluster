@@ -1,0 +1,20 @@
+apiVersion: grid.praxis.fast/v1alpha1
+kind: InferenceProvider
+metadata:
+  labels:
+    ai-grid/model: o17-deploy-check
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: grid-o17-deploy-check-at-site-b
+spec:
+  backendKind: local_model
+  clusterName: peer-site-b
+  endpoint: https://peer-site-b.grid.internal/v1
+  gridNetworkRef: grid
+  models:
+  - capabilities:
+    - text_generation
+    name: o17-deploy-check
+  providerKind: vllm
+  siteSelector:
+    matchLabels:
+      ai-grid/site: site-b

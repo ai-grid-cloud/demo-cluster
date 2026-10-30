@@ -4,4 +4,5 @@ resources:
 - ../../models/granite-33-2b-instruct/deployment
 - ../../models/granite-4-tiny/deployment
 - ../../models/night2-opt/deployment
+- ../../models/o17-deploy-check/deployment
 - ../../models/smollm2-chat/deployment

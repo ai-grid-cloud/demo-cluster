@@ -2,7 +2,7 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   annotations:
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     openshift.io/display-name: UAT8 sub
   name: uat8-sub
   namespace: models-as-a-service
@@ -11,8 +11,8 @@ spec:
   - name: uat8-opt
     namespace: models-as-a-service
     tokenRateLimits:
-    - limit: 1000
-      window: 1m
+    - limit: 15
+      window: 5m
   organization:
     id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
   owner:

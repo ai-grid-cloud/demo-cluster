@@ -5,4 +5,3 @@ resources:
 - ../../models/granite-4-tiny/deployment
 - ../../models/night2-opt/deployment
 - ../../models/smollm2-chat/deployment
-- ../../models/uat8-opt/deployment

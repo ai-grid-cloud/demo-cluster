@@ -1,0 +1,41 @@
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSSubscription
+metadata:
+  annotations:
+    ai-grid/version: "1"
+    openshift.io/display-name: smollm2-rehearsal-sub
+  name: smollm2-rehearsal-sub
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: smollm2-rehearsal
+    namespace: models-as-a-service
+    tokenRateLimits:
+    - limit: 1000
+      window: 1m
+  organization:
+    id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
+  owner:
+    groups:
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    users: []
+  priority: 0
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSAuthPolicy
+metadata:
+  annotations:
+    openshift.io/display-name: smollm2-rehearsal-sub
+  labels:
+    ai-grid/subscription: smollm2-rehearsal-sub
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: smollm2-rehearsal-sub-policy
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: smollm2-rehearsal
+    namespace: models-as-a-service
+  subjects:
+    groups:
+    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    users: []

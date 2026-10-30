@@ -1,6 +1,6 @@
 # Deployment values for demo1
 
-The values `ai-grid-cloud/ai-grid-tenant` (branch `cloud-provider`) reads for
+The values `ai-grid-cloud/ai-grid-tenant-demo` (branch `cloud-provider`) reads for
 our demo clusters: hub `local-cluster` (demo1, unlabelled: no OpenShift AI),
 spokes `site-a` (`ai-grid/role=ingress`) and `site-b` (`inference`). The layout
 is the template's `deployment/README.md`. Bootstrap with:

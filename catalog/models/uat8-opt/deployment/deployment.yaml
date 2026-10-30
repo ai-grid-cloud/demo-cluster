@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "3"
+    ai-grid/version: "4"
     openshift.io/display-name: UAT8 OPT 125m (edited)
   labels:
     ai-grid/model: uat8-opt
@@ -15,7 +15,7 @@ spec:
   - name: v3-6-0-kserve-config-llm-template-cpu
   model:
     name: uat8-opt
-    uri: hf://facebook/opt-350m
+    uri: hf://facebook/opt-125m
   replicas: 1
   router:
     gateway:

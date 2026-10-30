@@ -3,8 +3,8 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
-    openshift.io/display-name: UAT8 OPT 125m
+    ai-grid/version: "2"
+    openshift.io/display-name: UAT8 OPT 125m (edited)
   labels:
     ai-grid/model: uat8-opt
     app.kubernetes.io/managed-by: ai-grid-provider-backend

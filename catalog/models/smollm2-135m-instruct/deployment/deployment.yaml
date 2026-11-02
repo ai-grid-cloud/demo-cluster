@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     opendatahub.io/hardware-profile-name: default-profile
     opendatahub.io/hardware-profile-namespace: redhat-ods-applications
     openshift.io/display-name: SmolLM2-135M-Instruct
@@ -33,7 +33,10 @@ spec:
           name: main
   template:
     containers:
-    - name: main
+    - env:
+      - name: VLLM_ADDITIONAL_ARGS
+        value: --kv-cache-memory-bytes=1073741824
+      name: main
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

@@ -4,4 +4,5 @@ resources:
 - ../models/granite-33-2b-instruct/catalog
 - ../models/granite-4-tiny/catalog
 - ../models/night2-opt/catalog
+- ../models/smollm2-135m-uat-id35-check-abcdefg/catalog
 - ../models/smollm2-chat/catalog

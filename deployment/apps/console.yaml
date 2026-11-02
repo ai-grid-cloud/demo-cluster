@@ -30,14 +30,16 @@ spec:
           images:
             # Console: main 6bff09e's image (console #81 merged: React 19), the newest main
             # (Chris, 2026-11-02: demo1 runs the newest main build between UATs).
+            # UAT build of console #110 (cfchase:fix/wizard-id-35 4851aa8a), this hub's registry.
             console:
-              repository: ghcr.io/ai-grid-cloud/ai-grid-provider-console
-              tag: sha-6bff09eec528846575abe6a4d99dc56d327cf74a
-              digest: sha256:94cbda164bb16f23d15e717a008bb85c721f508fdcac9c8ae0d7dc80a6d89433
+              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-console
+              tag: id35-4851aa8
+              digest: sha256:9f29c92c25def2ae3f87872f91ff238f6c7cf66ce74c8291c1c1337c6a50b035
             backend:
               repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend
-              tag: carry-demo1-13c6ece
-              digest: sha256:1f4d3c09d6e2a6aba9253024780957ce3087f6733f9f765202a1a755a9a19d82
+              # UAT build: backend #58 (ab9b610) plus the demo1 carries (f77ecea).
+              tag: id35-carry-f77ecea
+              digest: sha256:a662e9c222109b3016994ac58a14149ca3136a568f26cf018cdf8b7dc221d735
             authProxy:
               tag: ""
               digest: sha256:5dc37f1a1e30927abe2dffbbfcb5a31ed8692cf498fb2684cca1b747b98b00a0

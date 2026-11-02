@@ -55,6 +55,20 @@ spec:
             perses:
               url: https://perses.openshift-cluster-observability-operator.svc:8080
               project: ai-grid-o11y
+          # UAT (2026-11-02, serving-options E7): the override path. A list replaces the
+          # chart's default, so default-profile is repeated. nvidia-gpu exists on site-b only.
+          servingOptions:
+            hardwareProfiles:
+              - name: default-profile
+                namespace: redhat-ods-applications
+                displayName: Default profile
+                description: 2 CPUs and 4 GiB of memory.
+                resources: [cpu, memory]
+              - name: nvidia-gpu
+                namespace: redhat-ods-applications
+                displayName: NVIDIA GPU
+                description: 4 CPUs, 16 GiB of memory and one NVIDIA GPU.
+                resources: [cpu, memory, nvidia.com/gpu]
           backend:
             # Add to AI Grid and Remove patch ManagedCluster labels. The chart's
             # ValidatingAdmissionPolicy limits the backend to the ai-grid/* and

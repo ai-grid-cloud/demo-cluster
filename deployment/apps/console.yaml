@@ -11,12 +11,14 @@ metadata:
 spec:
   project: default
   sources:
-    - repoURL: https://github.com/ai-grid-cloud/ai-grid-provider-console.git
+    - repoURL: https://github.com/cfchase/ai-grid-provider-console.git
+      # UAT (2026-11-02): console #115 at cfchase:feat/model-two-statuses 755f0985 (chart reads
+      # Argo CD Applications). Restore ai-grid-cloud and c62aaaa after the run.
       # A commit, not a branch: the chart holds ClusterRoleBindings and a
       # ValidatingAdmissionPolicy that Argo CD applies with cluster-admin
       # rights, so what runs here changes only by a reviewed commit. Bump it
       # with the images.
-      targetRevision: c62aaaa8c317b42a777214c7ead30e3a8dec9512
+      targetRevision: 755f0985ba1ca38608aad99968d5a619c92f2446
       path: charts/ai-grid-provider-console
       helm:
         releaseName: ai-grid-provider-console
@@ -30,14 +32,16 @@ spec:
           images:
             # Console: main 6bff09e's image (console #81 merged: React 19), the newest main
             # (Chris, 2026-11-02: demo1 runs the newest main build between UATs).
+            # UAT build of console #115 (755f0985), this hub's registry.
             console:
-              repository: ghcr.io/ai-grid-cloud/ai-grid-provider-console
-              tag: sha-6bff09eec528846575abe6a4d99dc56d327cf74a
-              digest: sha256:94cbda164bb16f23d15e717a008bb85c721f508fdcac9c8ae0d7dc80a6d89433
+              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-console
+              tag: status-755f098
+              digest: sha256:10ed97cfda4061b0dbeb77f695e4001f773276a9ba57355d42f7e380c50ae91c
             backend:
               repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend
-              tag: carry-demo1-13c6ece
-              digest: sha256:1f4d3c09d6e2a6aba9253024780957ce3087f6733f9f765202a1a755a9a19d82
+              # UAT build: backend #60 (3ae8c81) plus the demo1 carries (f44f3ff).
+              tag: status-carry-f44f3ff
+              digest: sha256:7c9e3a0ec644b75a4cdfdc88f9932d8a7281e28298858677427d4315c256ba7c
             authProxy:
               tag: ""
               digest: sha256:5dc37f1a1e30927abe2dffbbfcb5a31ed8692cf498fb2684cca1b747b98b00a0

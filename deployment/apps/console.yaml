@@ -28,12 +28,12 @@ spec:
           # routing), built in this hub's own registry. kube-auth-proxy is ODH's build
           # on the same fixed UBI base.
           images:
-            # Console: main 73e4938's image, the newest main (Chris, 2026-11-02: demo1 runs
-            # the newest main build between UATs).
+            # Console: main 6bff09e's image (console #81 merged: React 19), the newest main
+            # (Chris, 2026-11-02: demo1 runs the newest main build between UATs).
             console:
               repository: ghcr.io/ai-grid-cloud/ai-grid-provider-console
-              tag: sha-73e4938a4275274a7e1364552663d806a92a2d7e
-              digest: sha256:acd2f7c464d8547966c349a0dab903994ec492bec4864787291ada46b4b2889b
+              tag: sha-6bff09eec528846575abe6a4d99dc56d327cf74a
+              digest: sha256:94cbda164bb16f23d15e717a008bb85c721f508fdcac9c8ae0d7dc80a6d89433
             backend:
               repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend
               tag: carry-demo1-13c6ece

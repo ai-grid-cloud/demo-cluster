@@ -27,11 +27,11 @@ spec:
             console:
               repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-console-uat
               tag: 96cd66ae
-              digest: sha256:5c89f74532387cc318a4e39c6b17efb4d314e9da6b966cfe4564938c95700583
+              digest: sha256:b8189a7efb7c38991aa62f3b1c8a0b99f7f23903000ccb944e6cb66b78a74e40
             backend:
               repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend-uat
               tag: 86093ec
-              digest: sha256:da63bf465aa7c4e45948dbfec664ae030ebff27b6b9baf5e0f95842d047a7ad0
+              digest: sha256:d8d32af3e94b5cc21cac7c16fb4f19a31695d2543fde4298beb0ccdedb265622
             authProxy:
               tag: ""
               digest: sha256:1a5f6e220362aa2077026bb7e3091c38f80aac861fa060b08045e58e783d5bc5

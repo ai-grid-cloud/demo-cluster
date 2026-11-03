@@ -1,0 +1,16 @@
+# The LLMInferenceServiceConfig catalog models name in baseRefs to run on an
+# NVIDIA GPU node (granite-4-tiny). It tolerates the nvidia.com/gpu NoSchedule
+# taint; the demo spokes' GPU nodes no longer carry it (Chris, 2026-11-02), so
+# the toleration is harmless. Kept because the model still names it.
+# Was the template carry apps/ai-grid-models/spoke/02-gpu-preset.yaml.
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceServiceConfig
+metadata:
+  name: ai-grid-gpu
+  namespace: ai-grid-internal-models
+spec:
+  template:
+    tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule

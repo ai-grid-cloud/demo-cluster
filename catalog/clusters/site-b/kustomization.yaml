@@ -6,3 +6,4 @@ resources:
 - ../../models/night2-opt/deployment
 - ../../models/smollm2-chat/deployment
 - ../../models/uat-so-cpu/deployment
+- ../../models/uat-so-gpu/deployment

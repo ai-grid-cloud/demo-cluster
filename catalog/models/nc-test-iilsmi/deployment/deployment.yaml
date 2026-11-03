@@ -1,0 +1,65 @@
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  annotations:
+    ai-grid/clusters: site-b
+    ai-grid/version: "1"
+    openshift.io/description: Notification center live test, delete after
+    openshift.io/display-name: nc-test-iilsmi
+  labels:
+    ai-grid/model: nc-test-iilsmi
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: nc-test-iilsmi
+  namespace: ai-grid-internal-models
+spec:
+  model:
+    name: nc-test-iilsmi
+    uri: hf://facebook/opt-125m
+  replicas: 1
+  router:
+    gateway:
+      refs:
+      - name: openshift-ai-inference
+        namespace: openshift-ingress
+    route: {}
+    scheduler: {}
+  template:
+    containers:
+    - env:
+      - name: OMP_NUM_THREADS
+        value: "4"
+      - name: VLLM_CPU_KVCACHE_SPACE
+        value: "4"
+      - name: VLLM_ADDITIONAL_ARGS
+        value: --max-model-len=2048
+      image: registry.redhat.io/rhaii/vllm-cpu-rhel9@sha256:0ec0f5ff9a5ff263f58db0cfb19e3d7eef24b94c2d8629fe5145f5a8747e28c9
+      name: main
+      resources:
+        requests:
+          cpu: "4"
+          memory: 8Gi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    ai-grid/model: nc-test-iilsmi
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: nc-test-iilsmi-grid
+  namespace: ai-grid-internal-models
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: redhat-ai-grid
+    ports:
+    - port: 8000
+      protocol: TCP
+    - port: 9090
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: nc-test-iilsmi
+  policyTypes:
+  - Ingress

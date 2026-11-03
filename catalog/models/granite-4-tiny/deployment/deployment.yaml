@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "2"
+    ai-grid/version: '2'
     openshift.io/display-name: Granite 4 Tiny
   labels:
     ai-grid/model: granite-4-tiny
@@ -29,13 +29,27 @@ spec:
     - name: main
       resources:
         limits:
-          cpu: "3"
+          cpu: '3'
           memory: 12Gi
-          nvidia.com/gpu: "1"
+          nvidia.com/gpu: '1'
         requests:
-          cpu: "2"
+          cpu: '2'
           memory: 8Gi
-          nvidia.com/gpu: "1"
+          nvidia.com/gpu: '1'
+    - name: pvc-evictor
+      volumeMounts:
+      - name: kv-cache
+        mountPath: /kv-cache
+      - name: kv-cache
+        mountPath: /kv-cache/kv/model-cache/models
+        subPath: models
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+    volumes:
+    - name: kv-cache
+      emptyDir: {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

@@ -5,7 +5,7 @@ metadata:
     ai-grid/api: completions
     ai-grid/clusters: site-b
     ai-grid/model-name: facebook/opt-125m
-    ai-grid/version: "2"
+    ai-grid/version: '2'
     openshift.io/display-name: OPT 125m (night2, completions)
   labels:
     ai-grid/model: night2-opt
@@ -32,8 +32,22 @@ spec:
       name: main
       resources:
         requests:
-          cpu: "2"
+          cpu: '2'
           memory: 8Gi
+    - name: pvc-evictor
+      volumeMounts:
+      - name: kv-cache
+        mountPath: /kv-cache
+      - name: kv-cache
+        mountPath: /kv-cache/kv/model-cache/models
+        subPath: models
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+    volumes:
+    - name: kv-cache
+      emptyDir: {}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

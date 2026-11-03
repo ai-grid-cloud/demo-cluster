@@ -13,10 +13,10 @@ spec:
     - limit: 1000
       window: 1m
   organization:
-    id: 6c0e9545-c68e-448e-bd38-a4cca32e963a
+    id: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa
   owner:
     groups:
-    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    - name: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa/ai-grid-users
     users: []
   priority: 0
 ---
@@ -34,5 +34,5 @@ spec:
     namespace: models-as-a-service
   subjects:
     groups:
-    - name: 6c0e9545-c68e-448e-bd38-a4cca32e963a/group1
+    - name: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa/ai-grid-users
     users: []

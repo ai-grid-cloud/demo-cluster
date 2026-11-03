@@ -1,0 +1,41 @@
+# site-a (ingress): MaaS's public hostname. maas-api refuses to work until the
+# MaaS gateway's listeners name an external hostname ("Gateway has no external
+# hostname configured"), and the template leaves it unset. Helm replaces
+# lists, so both of the template's listeners are repeated with the hostname
+# added. The router terminates TLS for this host (sites/site-a/maas-route).
+components:
+  aigateway:
+    modelsAsAService:
+      gateway:
+        spec:
+          listeners:
+            - name: http
+              port: 80
+              hostname: maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+              protocol: HTTP
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchExpressions:
+                      - key: kubernetes.io/metadata.name
+                        operator: In
+                        values:
+                          - openshift-ingress
+                          - models-as-a-service
+                          - redhat-ai-gateway-infra
+            - name: https
+              port: 443
+              hostname: maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+              protocol: HTTPS
+              allowedRoutes:
+                namespaces:
+                  from: Selector
+                  selector:
+                    matchExpressions:
+                      - key: kubernetes.io/metadata.name
+                        operator: In
+                        values:
+                          - openshift-ingress
+                          - models-as-a-service
+                          - redhat-ai-gateway-infra

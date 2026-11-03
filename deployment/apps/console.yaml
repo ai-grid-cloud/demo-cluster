@@ -13,11 +13,13 @@ metadata:
 spec:
   project: default
   sources:
-    # UAT (serving options, trimmed scope): the chart from console 96cd66ae,
-    # copied into uat/console-chart. Restore after the UAT.
-    - repoURL: '@deploymentRepoURL@'
-      targetRevision: '@deploymentRevision@'
-      path: uat/console-chart
+    - repoURL: https://github.com/ai-grid-cloud/ai-grid-provider-console.git
+      # A commit, not a branch: the chart holds ClusterRoleBindings and a
+      # ValidatingAdmissionPolicy that Argo CD applies with cluster-admin
+      # rights, so what runs here changes only by a reviewed commit. Bump it
+      # with the images.
+      targetRevision: 6bff09eec528846575abe6a4d99dc56d327cf74a
+      path: charts/ai-grid-provider-console
       helm:
         releaseName: ai-grid-provider-console
         valuesObject:
@@ -25,13 +27,11 @@ spec:
           # backend main e2570b4 (2026-11-03 fresh install).
           images:
             console:
-              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-console-uat
-              tag: 96cd66ae
-              digest: sha256:5c89f74532387cc318a4e39c6b17efb4d314e9da6b966cfe4564938c95700583
+              tag: sha-6bff09eec528846575abe6a4d99dc56d327cf74a
+              digest: sha256:94cbda164bb16f23d15e717a008bb85c721f508fdcac9c8ae0d7dc80a6d89433
             backend:
-              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend-uat
-              tag: 86093ec
-              digest: sha256:da63bf465aa7c4e45948dbfec664ae030ebff27b6b9baf5e0f95842d047a7ad0
+              tag: sha-e2570b4740e3c1d528b56d9eb2ddcd54b8a4f3fb
+              digest: sha256:51e35c7446bb7183a6781c77000de7daf8aaa7eb40eea1ff2431e7fc4fb215b2
             authProxy:
               tag: ""
               digest: sha256:1a5f6e220362aa2077026bb7e3091c38f80aac861fa060b08045e58e783d5bc5

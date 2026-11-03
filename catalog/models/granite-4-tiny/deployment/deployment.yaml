@@ -36,6 +36,7 @@ spec:
           cpu: '2'
           memory: 8Gi
           nvidia.com/gpu: '1'
+      image: registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:c056e61672b6aea489ad5dde0bd2f8497230f5333e87f7cf6c494eba3bfdc808
     - name: pvc-evictor
       volumeMounts:
       - name: kv-cache

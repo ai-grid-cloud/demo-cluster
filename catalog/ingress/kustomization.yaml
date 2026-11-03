@@ -4,7 +4,6 @@ resources:
 - ../models/granite-33-2b-instruct/catalog
 - ../models/granite-4-tiny/catalog
 - ../models/nc-test-fomper/catalog
-- ../models/nc-test-iilsmi/catalog
 - ../models/night2-opt/catalog
 - ../models/opt-test/catalog
 - ../models/smollm2-chat/catalog

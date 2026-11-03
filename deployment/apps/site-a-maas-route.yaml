@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  # site-a's public MaaS entry point (deployment/sites/site-a/maas-route).
+  name: site-a-maas-route
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: '@deploymentRepoURL@'
+    targetRevision: '@deploymentRevision@'
+    path: '@deploymentPath@/sites/site-a/maas-route'
+  destination:
+    server: https://cluster-proxy-addon-user.multicluster-engine.svc.cluster.local:9092/site-a
+    namespace: openshift-ingress
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

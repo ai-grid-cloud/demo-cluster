@@ -15,8 +15,10 @@ spec:
   sources:
     # UAT (serving options, trimmed scope): the chart from console 96cd66ae,
     # copied into uat/console-chart. Restore after the UAT.
-    - repoURL: '@deploymentRepoURL@'
-      targetRevision: '@deploymentRevision@'
+    # A commit, not main: the backend's git token can write main, and this
+    # chart holds cluster-scoped RBAC that Argo CD applies as cluster-admin.
+    - repoURL: https://github.com/ai-grid-cloud/demo-cluster.git
+      targetRevision: 2edf7f295a04fb3ac47d52dc102d8f5332e1bd2a
       path: uat/console-chart
       helm:
         releaseName: ai-grid-provider-console

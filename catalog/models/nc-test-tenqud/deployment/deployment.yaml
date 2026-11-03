@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     openshift.io/description: Notification center live test, delete after
     openshift.io/display-name: nc-test-tenqud
   labels:
@@ -15,7 +15,7 @@ spec:
   model:
     name: nc-test-tenqud
     uri: hf://facebook/opt-125m
-  replicas: 1
+  replicas: 2
   router:
     gateway:
       refs:

@@ -5,7 +5,6 @@ resources:
 - ../../models/granite-4-tiny/deployment
 - ../../models/nc-test-fomper/deployment
 - ../../models/nc-test-iilsmi/deployment
-- ../../models/nc-test-tenqud/deployment
 - ../../models/night2-opt/deployment
 - ../../models/opt-test/deployment
 - ../../models/smollm2-chat/deployment

@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: '2'
+    ai-grid/version: "3"
     openshift.io/display-name: Granite 4 Tiny
   labels:
     ai-grid/model: granite-4-tiny
@@ -16,7 +16,7 @@ spec:
   model:
     name: granite-4-tiny
     uri: oci://registry.redhat.io/rhai/modelcar-granite-4-0-h-tiny-fp8-dynamic:3.0
-  replicas: 1
+  replicas: 0
   router:
     gateway:
       refs:
@@ -26,31 +26,17 @@ spec:
     scheduler: {}
   template:
     containers:
-    - name: main
+    - image: registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:c056e61672b6aea489ad5dde0bd2f8497230f5333e87f7cf6c494eba3bfdc808
+      name: main
       resources:
         limits:
-          cpu: '3'
+          cpu: "3"
           memory: 12Gi
-          nvidia.com/gpu: '1'
+          nvidia.com/gpu: "1"
         requests:
-          cpu: '2'
+          cpu: "2"
           memory: 8Gi
-          nvidia.com/gpu: '1'
-      image: registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:c056e61672b6aea489ad5dde0bd2f8497230f5333e87f7cf6c494eba3bfdc808
-    - name: pvc-evictor
-      volumeMounts:
-      - name: kv-cache
-        mountPath: /kv-cache
-      - name: kv-cache
-        mountPath: /kv-cache/kv/model-cache/models
-        subPath: models
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-    volumes:
-    - name: kv-cache
-      emptyDir: {}
+          nvidia.com/gpu: "1"
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

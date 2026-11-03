@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
 - ../../models/granite-33-2b-instruct/deployment
 - ../../models/granite-4-tiny/deployment
-- ../../models/nc-test-fomper/deployment
 - ../../models/night2-opt/deployment
 - ../../models/opt-test/deployment
 - ../../models/smollm2-chat/deployment

@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     openshift.io/display-name: UAT serving options CPU
   labels:
     ai-grid/model: uat-so-cpu
@@ -26,7 +26,8 @@ spec:
     scheduler: {}
   template:
     containers:
-    - name: main
+    - image: registry.redhat.io/rhaii/vllm-cpu-rhel9@sha256:578e9946e60a14596185937f6a083c1d42f3cff343b18648090b9ac80691d2e0
+      name: main
       resources:
         requests:
           cpu: "2"

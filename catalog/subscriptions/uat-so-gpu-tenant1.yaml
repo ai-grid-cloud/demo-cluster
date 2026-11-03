@@ -1,0 +1,38 @@
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSSubscription
+metadata:
+  annotations:
+    ai-grid/version: "1"
+  name: uat-so-gpu-tenant1
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: uat-so-gpu
+    namespace: models-as-a-service
+    tokenRateLimits:
+    - limit: 1000
+      window: 1m
+  organization:
+    id: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa
+  owner:
+    groups:
+    - name: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa/ai-grid-users
+    users: []
+  priority: 0
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSAuthPolicy
+metadata:
+  labels:
+    ai-grid/subscription: uat-so-gpu-tenant1
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: uat-so-gpu-tenant1-policy
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: uat-so-gpu
+    namespace: models-as-a-service
+  subjects:
+    groups:
+    - name: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa/ai-grid-users
+    users: []

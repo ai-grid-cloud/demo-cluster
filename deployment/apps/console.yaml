@@ -13,31 +13,51 @@ metadata:
 spec:
   project: default
   sources:
-    # UAT (serving options, trimmed scope): the chart from console 96cd66ae,
-    # copied into uat/console-chart. Restore after the UAT.
-    # A commit, not main: the backend's git token can write main, and this
-    # chart holds cluster-scoped RBAC that Argo CD applies as cluster-admin.
-    - repoURL: https://github.com/ai-grid-cloud/demo-cluster.git
-      targetRevision: 2edf7f295a04fb3ac47d52dc102d8f5332e1bd2a
-      path: uat/console-chart
+    # UAT (model hardware): the chart from console PR #123's head ad86f73, on
+    # the author's fork. Revert this commit to restore the serving-options UAT.
+    # A commit, not a branch: this chart holds cluster-scoped RBAC that Argo CD
+    # applies as cluster-admin.
+    - repoURL: https://github.com/DaoDaoNoCode/ai-grid-provider-console.git
+      targetRevision: ad86f735be9a2123ab49e660844fe261b29e35a2
+      path: charts/ai-grid-provider-console
       helm:
         releaseName: ai-grid-provider-console
         valuesObject:
-          # By digest: tags can be overwritten. Console and chart are main 6bff09e,
-          # backend main e2570b4 (2026-11-03 fresh install).
+          # By digest: tags can be overwritten. CI's PR images: console pr-123
+          # (38eaf37, its head ad86f73 merged onto main c17e98e) and backend
+          # pr-65 (51c6441, its head 276d8c2 merged onto main 5920a52), which
+          # lets a model leave its image to the cluster's default.
           images:
             console:
-              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-console-uat
-              tag: 96cd66ae
-              digest: sha256:b8189a7efb7c38991aa62f3b1c8a0b99f7f23903000ccb944e6cb66b78a74e40
+              repository: ghcr.io/ai-grid-cloud/ai-grid-provider-console
+              tag: pr-123
+              digest: sha256:215053ff872548c8af722f9c0f67206d34621ac739b095b72abfd558733f0f69
             backend:
-              repository: image-registry.openshift-image-registry.svc:5000/ai-grid-provider-console/ai-grid-provider-backend-uat
-              tag: 86093ec
-              digest: sha256:d8d32af3e94b5cc21cac7c16fb4f19a31695d2543fde4298beb0ccdedb265622
+              repository: ghcr.io/ai-grid-cloud/ai-grid-provider-backend
+              tag: pr-65
+              digest: sha256:b2f0454df5ec073a03d8063d3bc002a36021fc3c89abb2f336d4af77e4eead93
             authProxy:
               tag: ""
               digest: sha256:1a5f6e220362aa2077026bb7e3091c38f80aac861fa060b08045e58e783d5bc5
           console:
+            # The Deploy model wizard's Hardware choices, set here so this hub's
+            # settings live in git (the chart's README, "Model hardware"). These
+            # are the chart's defaults: NVIDIA GPU leaves the image to the
+            # cluster's default vLLM, CPU only carries OpenShift AI 3.6's CPU
+            # preset's image and settings.
+            models:
+              hardware:
+                - id: nvidia-gpu
+                  label: NVIDIA GPU
+                  description: For clusters with NVIDIA GPUs.
+                  accelerator: nvidia.com/gpu
+                  defaults: {accelerators: 1, cpu: "2", memory: 16Gi}
+                - id: cpu
+                  label: CPU only
+                  description: For x86_64 clusters without GPUs.
+                  image: registry.redhat.io/rhaii/vllm-cpu-rhel9@sha256:0ec0f5ff9a5ff263f58db0cfb19e3d7eef24b94c2d8629fe5145f5a8747e28c9
+                  env: {VLLM_CPU_KVCACHE_SPACE: "4", OMP_NUM_THREADS: "4"}
+                  defaults: {cpu: "4", memory: 8Gi}
             # The Monitoring page: its tabs are the dashboard-* PersesDashboards in
             # one project, here OpenShift AI's, served by the Cluster Observability
             # Operator's Perses on the hub.

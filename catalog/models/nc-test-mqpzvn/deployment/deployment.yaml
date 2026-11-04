@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "2"
+    ai-grid/version: "3"
     openshift.io/display-name: nc-test-mqpzvn
   labels:
     ai-grid/model: nc-test-mqpzvn
@@ -35,7 +35,7 @@ spec:
       name: main
       resources:
         requests:
-          cpu: "2"
+          cpu: "3"
           memory: 6Gi
 ---
 apiVersion: networking.k8s.io/v1

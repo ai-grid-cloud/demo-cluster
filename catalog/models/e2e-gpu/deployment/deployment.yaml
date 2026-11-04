@@ -1,0 +1,59 @@
+apiVersion: serving.kserve.io/v1alpha2
+kind: LLMInferenceService
+metadata:
+  annotations:
+    ai-grid/clusters: site-a,site-b
+    ai-grid/version: "1"
+    openshift.io/display-name: e2e-gpu
+  labels:
+    ai-grid/model: e2e-gpu
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: e2e-gpu
+  namespace: ai-grid-internal-models
+spec:
+  model:
+    name: e2e-gpu
+    uri: oci://registry.redhat.io/rhai/modelcar-granite-4-0-h-tiny-fp8-dynamic:3.0
+  replicas: 1
+  router:
+    gateway:
+      refs:
+      - name: openshift-ai-inference
+        namespace: openshift-ingress
+    route: {}
+    scheduler: {}
+  template:
+    containers:
+    - name: main
+      resources:
+        limits:
+          nvidia.com/gpu: "1"
+        requests:
+          cpu: "2"
+          memory: 8Gi
+          nvidia.com/gpu: "1"
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  labels:
+    ai-grid/model: e2e-gpu
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: e2e-gpu-grid
+  namespace: ai-grid-internal-models
+spec:
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: redhat-ai-grid
+    ports:
+    - port: 8000
+      protocol: TCP
+    - port: 9090
+      protocol: TCP
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: e2e-gpu
+  policyTypes:
+  - Ingress

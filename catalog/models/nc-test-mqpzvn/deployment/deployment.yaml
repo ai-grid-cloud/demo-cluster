@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     openshift.io/display-name: nc-test-mqpzvn
   labels:
     ai-grid/model: nc-test-mqpzvn
@@ -14,7 +14,7 @@ spec:
   model:
     name: nc-test-mqpzvn
     uri: hf://facebook/opt-125m
-  replicas: 1
+  replicas: 2
   router:
     gateway:
       refs:

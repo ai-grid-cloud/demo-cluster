@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
 - ../models/granite-33-2b-instruct/catalog
 - ../models/granite-4-tiny/catalog
-- ../models/nc-test-bwbqai/catalog
 - ../models/night2-opt/catalog
 - ../models/opt-test/catalog
 - ../models/smollm2-chat/catalog

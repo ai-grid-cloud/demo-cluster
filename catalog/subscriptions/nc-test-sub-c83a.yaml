@@ -1,0 +1,45 @@
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSSubscription
+metadata:
+  annotations:
+    ai-grid/version: "1"
+    openshift.io/description: Live test of the subscription status watch; safe to
+      delete
+    openshift.io/display-name: nc-test-sub-c83a
+  name: nc-test-sub-c83a
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: smollm2-chat
+    namespace: models-as-a-service
+    tokenRateLimits:
+    - limit: 1000
+      window: 1h
+  organization:
+    id: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa
+  owner:
+    groups:
+    - name: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa/ai-grid-users
+    users: []
+  priority: 0
+---
+apiVersion: maas.opendatahub.io/v1alpha1
+kind: MaaSAuthPolicy
+metadata:
+  annotations:
+    openshift.io/description: Live test of the subscription status watch; safe to
+      delete
+    openshift.io/display-name: nc-test-sub-c83a
+  labels:
+    ai-grid/subscription: nc-test-sub-c83a
+    app.kubernetes.io/managed-by: ai-grid-provider-backend
+  name: nc-test-sub-c83a-policy
+  namespace: models-as-a-service
+spec:
+  modelRefs:
+  - name: smollm2-chat
+    namespace: models-as-a-service
+  subjects:
+    groups:
+    - name: 42c3e46f-2477-44d7-a85b-d3b43f6b31fa/ai-grid-users
+    users: []

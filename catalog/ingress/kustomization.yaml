@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+- ../models/e2e-cpu/catalog
 - ../models/granite-33-2b-instruct/catalog
 - ../models/night2-opt/catalog
 - ../models/opt-test/catalog

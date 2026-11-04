@@ -61,6 +61,6 @@ operator:
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:8527f2ad5e9efa01fda4ddbf35bdb2e39b70dac74bc12547c7a7c833e0575126
           - name: RELATED_IMAGE_ODH_MOD_ARCH_MAAS_IMAGE
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:fdf10f0ce2cd7b85e9a232e3c33d5d43ec36c9735b10848481d415f672a802e7
-          # SSO Run 4: core-bff with gateway auth (X7, X8) on odh-dashboard main + #10540; X9 dropped (#10541).
+          # SSO Run 4: core-bff with ai-grid-dev2's verified oidc auth (replaces X7-X9) on odh-dashboard main + #10540.
           - name: RELATED_IMAGE_ODH_CORE_BFF_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:fd889d9804378eb5d9a5b880e105fe23c53084643dea06506ee31a88748b63e7
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:46d4ecb3b871f91fea8e6896e02d5a6bbf33432623b1c51cd3d244774665c042

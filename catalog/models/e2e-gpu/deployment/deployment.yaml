@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-a,site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     openshift.io/display-name: e2e-gpu
   labels:
     ai-grid/model: e2e-gpu
@@ -24,7 +24,8 @@ spec:
     scheduler: {}
   template:
     containers:
-    - name: main
+    - image: registry.redhat.io/rhaii/vllm-cuda-rhel9@sha256:c056e61672b6aea489ad5dde0bd2f8497230f5333e87f7cf6c494eba3bfdc808
+      name: main
       resources:
         limits:
           nvidia.com/gpu: "1"

@@ -21,7 +21,6 @@ RHOAI_QUAY_PULL_SECRET=... \
 | `apps/catalog.yaml`, `catalog/` | Delivers this repository's `../catalog/` (models, subscriptions) through the template's catalog ApplicationSets, with the catalog URL replaced. |
 | `apps/console.yaml` | The provider console on the dedicated hub; its git writer commits to this repository's `catalog/`. |
 | `apps/gpu.yaml`, `gpu/` | NFD and the NVIDIA GPU operator on inference sites (`site-b` has one `g6.xlarge`). |
-| `apps/keycloak-settings.yaml`, `keycloak-settings/` | Keycloak imports realms without replacing them, so organizations the console creates survive a restart. |
 | `cluster-admins.yaml` | Nobody gets cluster-admin from git. Only read where cluster-config runs (not on the dedicated hub). |
 
 Anyone who can push here controls what the hub deploys, including the console's git writer token. That is

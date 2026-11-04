@@ -39,9 +39,10 @@ components:
                           - openshift-ingress
                           - models-as-a-service
                           - redhat-ai-gateway-infra
-# SSO group test (ai-grid-research, 2026-11-03): MaaS PR 1812 (maas-api,
-# maas-controller at be6dbb5) and odh-dashboard PR 10540 (the MaaS BFF at
-# ba7d88c, on the running maas-ui image), built in site-a's own registry
+# SSO Run 4 (ai-grid-research, 2026-11-04), our fixes off: maas-api and
+# maas-controller from MaaS main 0ed0143 (#1816) + PR 1812 0818e91; the MaaS BFF
+# and core-bff from odh-dashboard main 76982ad (#10541) + PR 10540 ba7d88c, on
+# the nightly's frontend images. Built in site-a's own registry
 # (namespace sso-test-images). This list replaces the template's env list, so
 # its other entries are repeated from apps/rhoai/values.yaml (cluster-gitops main
 # after #203: only the AI gateway controller; the Grid operator and model
@@ -55,12 +56,11 @@ operator:
           - name: RELATED_IMAGE_ODH_AI_GATEWAY_CONTROLLER_IMAGE
             value: quay.io/sbatsche/odh-ai-gateway-controller@sha256:3968ba3bf7037ae2eba0c6b9239c4b72ba50ef193fed987caf89649e49467015
           - name: RELATED_IMAGE_ODH_MAAS_API_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-api@sha256:a3594201f1da144aa5578c7250a32bc0ce44914893d52ea9c9c4841d07f6f4ed
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-api@sha256:3f582b63ba136cbf8ffcbbf54b90c01ce0f0732fb37c3ffca9732aad29d2ef44
           - name: RELATED_IMAGE_ODH_MAAS_CONTROLLER_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:f3599aa07b69aea2376591b9fa04081e55c590f00e1b6cac7646662629720ad7
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:8527f2ad5e9efa01fda4ddbf35bdb2e39b70dac74bc12547c7a7c833e0575126
           - name: RELATED_IMAGE_ODH_MOD_ARCH_MAAS_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:84ab625110b11f25c13149f48bd69bb0196cb287d234a3dc79ae1ffce460dbf2
-          # SSO test: core-bff with --auth-method=gateway (set by AUTH_METHOD_OVERRIDE in the image) and grid on by default,
-          # so Keycloak tokens checked by the MaaS gateway aren't sent to the Kubernetes API.
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:fdf10f0ce2cd7b85e9a232e3c33d5d43ec36c9735b10848481d415f672a802e7
+          # SSO Run 4 (fixes off): core-bff with upstream auth (no gateway mode), from odh-dashboard main + #10540.
           - name: RELATED_IMAGE_ODH_CORE_BFF_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:b2a90e24d674eefb43edbe73f5810b0caa3d4d6d9a9588f668e2313db01c8511
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:9d8f1a70519883f46bde80351aeebc1419570d6b1a4295c870726aaa21267bd9

@@ -39,7 +39,7 @@ components:
                           - openshift-ingress
                           - models-as-a-service
                           - redhat-ai-gateway-infra
-# SSO Run 4 (ai-grid-research, 2026-11-04), our fixes off: maas-api and
+# SSO Run 4 (ai-grid-research, 2026-11-04): maas-api (plus our org_id group fix, X11) and
 # maas-controller from MaaS main 0ed0143 (#1816) + PR 1812 0818e91; the MaaS BFF
 # and core-bff from odh-dashboard main 76982ad (#10541) + PR 10540 ba7d88c, on
 # the nightly's frontend images. Built in site-a's own registry
@@ -56,11 +56,11 @@ operator:
           - name: RELATED_IMAGE_ODH_AI_GATEWAY_CONTROLLER_IMAGE
             value: quay.io/sbatsche/odh-ai-gateway-controller@sha256:3968ba3bf7037ae2eba0c6b9239c4b72ba50ef193fed987caf89649e49467015
           - name: RELATED_IMAGE_ODH_MAAS_API_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-api@sha256:3f582b63ba136cbf8ffcbbf54b90c01ce0f0732fb37c3ffca9732aad29d2ef44
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-api@sha256:9e3744b72a8329732604c275c811d821b8eb1a5836b6dba3f7c6c118ffa81861
           - name: RELATED_IMAGE_ODH_MAAS_CONTROLLER_IMAGE
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:8527f2ad5e9efa01fda4ddbf35bdb2e39b70dac74bc12547c7a7c833e0575126
           - name: RELATED_IMAGE_ODH_MOD_ARCH_MAAS_IMAGE
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:fdf10f0ce2cd7b85e9a232e3c33d5d43ec36c9735b10848481d415f672a802e7
-          # SSO Run 4 (fixes off): core-bff with upstream auth (no gateway mode), from odh-dashboard main + #10540.
+          # SSO Run 4: core-bff with gateway auth (X7, X8) on odh-dashboard main + #10540; X9 dropped (#10541).
           - name: RELATED_IMAGE_ODH_CORE_BFF_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:9d8f1a70519883f46bde80351aeebc1419570d6b1a4295c870726aaa21267bd9
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:fd889d9804378eb5d9a5b880e105fe23c53084643dea06506ee31a88748b63e7

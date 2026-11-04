@@ -2,9 +2,9 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   annotations:
-    ai-grid/version: "1"
-    openshift.io/description: Live test of the subscription status watch; safe to
-      delete
+    ai-grid/version: "2"
+    openshift.io/description: Live test of the subscription status watch (edited);
+      safe to delete
     openshift.io/display-name: nc-test-sub-c83a
   name: nc-test-sub-c83a
   namespace: models-as-a-service
@@ -27,8 +27,8 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSAuthPolicy
 metadata:
   annotations:
-    openshift.io/description: Live test of the subscription status watch; safe to
-      delete
+    openshift.io/description: Live test of the subscription status watch (edited);
+      safe to delete
     openshift.io/display-name: nc-test-sub-c83a
   labels:
     ai-grid/subscription: nc-test-sub-c83a

@@ -62,7 +62,7 @@ operator:
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:f3599aa07b69aea2376591b9fa04081e55c590f00e1b6cac7646662629720ad7
           - name: RELATED_IMAGE_ODH_MOD_ARCH_MAAS_IMAGE
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:84ab625110b11f25c13149f48bd69bb0196cb287d234a3dc79ae1ffce460dbf2
-          # SSO test: core-bff with --auth-method=gateway (set by AUTH_METHOD_OVERRIDE in the image),
+          # SSO test: core-bff with --auth-method=gateway (set by AUTH_METHOD_OVERRIDE in the image) and grid on by default,
           # so Keycloak tokens checked by the MaaS gateway aren't sent to the Kubernetes API.
           - name: RELATED_IMAGE_ODH_CORE_BFF_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:dc8773941a5916e8d59ae2c32a527ea1ee8fd1048b8fc7a3e735d2400435c0fe
+            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/core-bff@sha256:b2a90e24d674eefb43edbe73f5810b0caa3d4d6d9a9588f668e2313db01c8511

@@ -3,7 +3,7 @@ kind: LLMInferenceService
 metadata:
   annotations:
     ai-grid/clusters: site-b
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     openshift.io/display-name: nc-test-vonsok
   labels:
     ai-grid/model: nc-test-vonsok
@@ -13,7 +13,7 @@ metadata:
 spec:
   model:
     name: nc-test-vonsok
-    uri: hf://facebook/opt-125m
+    uri: hf://HuggingFaceTB/SmolLM2-135M-Instruct
   replicas: 1
   router:
     gateway:
@@ -35,8 +35,8 @@ spec:
       name: main
       resources:
         requests:
-          cpu: "4"
-          memory: 8Gi
+          cpu: "3"
+          memory: 10Gi
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

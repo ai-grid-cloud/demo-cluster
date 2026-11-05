@@ -2,7 +2,11 @@
 # MaaS gateway's listeners name an external hostname ("Gateway has no external
 # hostname configured"), and the template leaves it unset. Helm replaces
 # lists, so both of the template's listeners are repeated with the hostname
-# added. The router terminates TLS for this host (sites/site-a/maas-route).
+# added. The https listener also names the host's Let's Encrypt certificate
+# (sites/site-a/maas-route/certificate.yaml); repeating the listener drops the
+# profile's tls block, so without this the listener has no certificate. The
+# Route passes TLS through to it, so the AI gateway controller's consumer
+# portal (which attaches to the https listener only) serves /maas-portal.
 components:
   aigateway:
     modelsAsAService:
@@ -28,6 +32,12 @@ components:
               port: 443
               hostname: maas.apps.ocp.bclkw.sandbox2619.opentlc.com
               protocol: HTTPS
+              tls:
+                mode: Terminate
+                certificateRefs:
+                  - group: ""
+                    kind: Secret
+                    name: maas-gw-public-tls
               allowedRoutes:
                 namespaces:
                   from: Selector

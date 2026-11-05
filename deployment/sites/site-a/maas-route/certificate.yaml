@@ -1,0 +1,20 @@
+# The public certificate for site-a's MaaS host, on the MaaS gateway's https
+# listener (clusters/site-a/rhoai.yaml). Let's Encrypt through DNS-01, so it
+# renews on its own. It existed on site-a before it was in git (env-setup era);
+# this spec is the live one, so Argo CD adopts it without a reissue.
+# Site-specific: the host is site-a's apps domain.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: maas-gw-public-tls
+  namespace: openshift-ingress
+spec:
+  dnsNames:
+    - maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: letsencrypt-production-aws-fallback
+  privateKey:
+    rotationPolicy: Always
+  secretName: maas-gw-public-tls

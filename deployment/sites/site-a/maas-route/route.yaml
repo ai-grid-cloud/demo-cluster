@@ -1,7 +1,8 @@
-# Tenants reach MaaS on site-a at https://maas.<site-a apps domain>. The
-# template's MaaS gateway has no hostname and an HTTPS listener without a
-# certificate, so the router terminates TLS with its own certificate (publicly
-# trusted on demo.redhat.com) and forwards to the gateway's HTTP listener.
+# Tenants reach MaaS on site-a at https://maas.<site-a apps domain>. The router
+# passes TLS through to the MaaS gateway's https listener, which serves the
+# host's Let's Encrypt certificate (certificate.yaml, clusters/site-a/rhoai.yaml).
+# The AI gateway controller's consumer portal attaches to that listener only,
+# so /maas-portal and /oauth2 are served by it.
 # Site-specific: the host is site-a's apps domain.
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -14,7 +15,7 @@ spec:
     kind: Service
     name: maas-default-gateway-maas-gateway-class
   port:
-    targetPort: http
+    targetPort: https
   tls:
-    termination: edge
+    termination: passthrough
     insecureEdgeTerminationPolicy: Redirect

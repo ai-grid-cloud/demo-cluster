@@ -7,6 +7,10 @@
 # profile's tls block, so without this the listener has no certificate. The
 # Route passes TLS through to it, so the AI gateway controller's consumer
 # portal (which attaches to the https listener only) serves /maas-portal.
+# The live Gateway on site-a got this tls block by hand (oc patch, 2026-11-05):
+# cluster-gitops' rhoai ApplicationSet ignores the listener hostnames with
+# RespectIgnoreDifferences, so Argo CD never changes listeners after creation.
+# A fresh install creates the Gateway with it.
 components:
   aigateway:
     modelsAsAService:

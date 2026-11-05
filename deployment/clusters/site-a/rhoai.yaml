@@ -77,14 +77,3 @@ operator:
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:8527f2ad5e9efa01fda4ddbf35bdb2e39b70dac74bc12547c7a7c833e0575126
           - name: RELATED_IMAGE_ODH_MOD_ARCH_MAAS_IMAGE
             value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:fdf10f0ce2cd7b85e9a232e3c33d5d43ec36c9735b10848481d415f672a802e7
-# Staged test of cluster-gitops fix/grid-gateway-networkpolicy (646e327): turn
-# the grid gateways' ingress NetworkPolicies back on (site-a is combined, so
-# both). Since #195 the rhoai ApplicationSet sets networkPolicy.from but not
-# enabled, and the chart defaults it to false. Remove once cloud-provider
-# carries the fix.
-praxis-gateway:
-  networkPolicy:
-    enabled: true
-praxis-provider-gateway:
-  networkPolicy:
-    enabled: true

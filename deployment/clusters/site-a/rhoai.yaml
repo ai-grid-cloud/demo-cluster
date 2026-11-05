@@ -1,16 +1,14 @@
-# site-a (ingress): MaaS's public hostname. maas-api refuses to work until the
-# MaaS gateway's listeners name an external hostname ("Gateway has no external
-# hostname configured"), and the template leaves it unset. Helm replaces
-# lists, so both of the template's listeners are repeated with the hostname
-# added. The https listener also names the host's Let's Encrypt certificate
-# (sites/site-a/maas-route/certificate.yaml); repeating the listener drops the
-# profile's tls block, so without this the listener has no certificate. The
-# Route passes TLS through to it, so the AI gateway controller's consumer
-# portal (which attaches to the https listener only) serves /maas-portal.
-# The live Gateway on site-a got this tls block by hand (oc patch, 2026-11-05):
-# cluster-gitops' rhoai ApplicationSet ignores the listener hostnames with
-# RespectIgnoreDifferences, so Argo CD never changes listeners after creation.
-# A fresh install creates the Gateway with it.
+# site-a (ingress): the MaaS gateway's https listener names the host's Let's
+# Encrypt certificate (sites/site-a/maas-route/certificate.yaml). Helm replaces
+# lists, so both of the template's listeners are repeated, which drops the
+# profile's tls block; this adds the certificate back. The Route passes TLS
+# through to it, so the AI gateway controller's consumer portal (which attaches
+# to the https listener only) serves /maas-portal.
+# No hostname here: cluster-gitops' gateway-hostname policy sets both listeners'
+# hostname (maas.<apps domain>), and the rhoai ApplicationSet ignores it. If
+# these values also set a hostname, Argo CD's RespectIgnoreDifferences keeps
+# the live listener list on every sync, so no listener change from git applies
+# (it did on 2026-11-05: the tls block had to be added by hand).
 components:
   aigateway:
     modelsAsAService:
@@ -19,7 +17,6 @@ components:
           listeners:
             - name: http
               port: 80
-              hostname: maas.apps.ocp.bclkw.sandbox2619.opentlc.com
               protocol: HTTP
               allowedRoutes:
                 namespaces:
@@ -34,7 +31,6 @@ components:
                           - redhat-ai-gateway-infra
             - name: https
               port: 443
-              hostname: maas.apps.ocp.bclkw.sandbox2619.opentlc.com
               protocol: HTTPS
               tls:
                 mode: Terminate

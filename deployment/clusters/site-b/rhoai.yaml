@@ -1,0 +1,9 @@
+# site-b (inference): turn on the provider gateway's ingress NetworkPolicy, a
+# staged test of cluster-gitops fix/grid-gateway-networkpolicy (646e327) before
+# it reaches every site through cloud-provider. Since cluster-gitops #195 the
+# rhoai ApplicationSet sets networkPolicy.from but not enabled, and the chart
+# defaults it to false, so no grid gateway has a NetworkPolicy. Remove this file
+# once cloud-provider carries the fix.
+praxis-provider-gateway:
+  networkPolicy:
+    enabled: true

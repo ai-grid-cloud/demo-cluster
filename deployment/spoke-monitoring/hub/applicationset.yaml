@@ -1,0 +1,47 @@
+# cluster-monitoring-config (spoke-monitoring/config) on every AI Grid spoke
+# (Placement ai-grid-spokes). apps/spoke-monitoring.yaml fills in the clusters
+# generator's values (the deployment repository), which the template reads as
+# .values.*.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: spoke-monitoring
+  namespace: openshift-gitops
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  syncPolicy:
+    preserveResourcesOnDeletion: true
+  generators:
+    - matrix:
+        generators:
+          - clusterDecisionResource:
+              configMapRef: acm-placement
+              labelSelector:
+                matchLabels:
+                  cluster.open-cluster-management.io/placement: ai-grid-spokes
+              requeueAfterSeconds: 60
+          - clusters:
+              selector:
+                matchLabels:
+                  apps.open-cluster-management.io/acm-cluster: "true"
+                  name: '{{ .clusterName }}'
+  template:
+    metadata:
+      name: 'spoke-monitoring-{{ .name | trunc 30 }}-{{ sha256sum .name | trunc 8 }}'
+      namespace: openshift-gitops
+    spec:
+      project: default
+      source:
+        repoURL: '{{ .values.deploymentRepoURL }}'
+        targetRevision: '{{ .values.deploymentRevision }}'
+        path: '{{ .values.deploymentPath }}/spoke-monitoring/config'
+      destination:
+        server: '{{ if eq (index .metadata.labels "local-cluster") "true" }}https://kubernetes.default.svc{{ else }}{{ .server }}{{ end }}'
+        namespace: openshift-monitoring
+      syncPolicy:
+        automated:
+          # Never delete cluster-monitoring-config: without it Prometheus goes back
+          # to the node disk.
+          prune: false
+          selfHeal: true

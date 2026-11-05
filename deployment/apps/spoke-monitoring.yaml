@@ -1,0 +1,36 @@
+# Platform Prometheus on a volume on every AI Grid spoke (spoke-monitoring/).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spoke-monitoring
+  namespace: openshift-gitops
+spec:
+  project: default
+  source:
+    repoURL: '@deploymentRepoURL@'
+    targetRevision: '@deploymentRevision@'
+    path: '@deploymentPath@/spoke-monitoring/hub'
+    # The root ApplicationSet fills in these tokens; the patch hands them to
+    # the nested ApplicationSet as its clusters generator's values.
+    kustomize:
+      patches:
+        - target:
+            group: argoproj.io
+            kind: ApplicationSet
+            name: spoke-monitoring
+          patch: |-
+            - op: add
+              path: /spec/generators/0/matrix/generators/1/clusters/values
+              value:
+                deploymentRepoURL: '@deploymentRepoURL@'
+                deploymentRevision: '@deploymentRevision@'
+                deploymentPath: '@deploymentPath@'
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-gitops
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - SkipDryRunOnMissingResource=true

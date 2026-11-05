@@ -1,0 +1,22 @@
+# Platform Prometheus on a volume, with a size cap. With OpenShift's defaults
+# (15d, no volume, no size limit) it filled the spokes' 99 GiB node disk
+# (48 GiB on site-a, 41 GiB on site-b, 2026-11-05): site-a's node hit
+# DiskPressure and evicted OpenShift AI pods and the RHOAI catalog, which
+# blocked the rhoai sync. The fleet's metrics live in ACM's Thanos on the hub,
+# so 7 days here is enough. 40GB stays under the 50Gi volume.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cluster-monitoring-config
+  namespace: openshift-monitoring
+data:
+  config.yaml: |
+    prometheusK8s:
+      retention: 7d
+      retentionSize: 40GB
+      volumeClaimTemplate:
+        spec:
+          storageClassName: gp3-csi
+          resources:
+            requests:
+              storage: 50Gi

@@ -49,14 +49,15 @@ components:
                           - openshift-ingress
                           - models-as-a-service
                           - redhat-ai-gateway-infra
-# SSO Run 4 (ai-grid-research, 2026-11-04): maas-api (plus our org_id group fix, X11) and
-# maas-controller from MaaS main 0ed0143 (#1816) + PR 1812 0818e91; the MaaS BFF
-# from odh-dashboard main 76982ad (#10541) + PR 10540 ba7d88c, on
-# the nightly's frontend images. Built in site-a's own registry
-# (namespace sso-test-images). This list replaces the template's env list, which
-# is empty since the AI gateway controller pin went (FBC 4d6d0dd ships
-# ai-gateway-controller #209), so it repeats nothing. The 1812 maas-api
-# replaces Kevin Howell's loki-access-proxy test build. Remove after the test.
+# Identity test images (2026-11-05), for testing the flat OIDC claims before a
+# 3.6 build: maas-api and maas-controller from MaaS PR 1834 head e89282d (merge
+# of main 7f536e7), with no commits of ours (1834 qualifies groups by org_id,
+# which our old X11 fix did); the MaaS BFF from odh-dashboard main 05d5fc7 +
+# PR 10540 ba7d88c, on the 3.6 nightly's odh-mod-arch-maas image (FBC 4d6d0dd).
+# Public on ghcr.io/ai-grid-cloud; notes in the ai-grid workspace
+# docs/status/2026-11-05-identity-test-images.md. This list replaces the
+# template's env list, which is empty. Remove once a nightly carries 1834 and
+# 10540.
 # core-bff is the payload's (2026-11-05): after odh-dashboard #10541 the portal
 # frontend calls no core-bff /api route, so the stock user_token core-bff works.
 operator:
@@ -65,8 +66,8 @@ operator:
       config:
         env:
           - name: RELATED_IMAGE_ODH_MAAS_API_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-api@sha256:9e3744b72a8329732604c275c811d821b8eb1a5836b6dba3f7c6c118ffa81861
+            value: ghcr.io/ai-grid-cloud/maas-api@sha256:9cabfdeadc7a9ed16a1e135c7e4de692e82dce3770a937d0dd7269efa336f0d9
           - name: RELATED_IMAGE_ODH_MAAS_CONTROLLER_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-controller@sha256:8527f2ad5e9efa01fda4ddbf35bdb2e39b70dac74bc12547c7a7c833e0575126
+            value: ghcr.io/ai-grid-cloud/maas-controller@sha256:95b04a5466dfc8dea52eccfb647ed28278caf59192bed641e06e438d680e978a
           - name: RELATED_IMAGE_ODH_MOD_ARCH_MAAS_IMAGE
-            value: image-registry.openshift-image-registry.svc:5000/sso-test-images/maas-ui@sha256:fdf10f0ce2cd7b85e9a232e3c33d5d43ec36c9735b10848481d415f672a802e7
+            value: ghcr.io/ai-grid-cloud/maas-ui@sha256:d8399c717d2442353fd6d84671f5d9c4ab2a4b76039049e825f58bb0837c1963

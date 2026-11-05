@@ -49,6 +49,7 @@ components:
                           - openshift-ingress
                           - models-as-a-service
                           - redhat-ai-gateway-infra
+                          - ai-grid-listener-probe
 # SSO Run 4 (ai-grid-research, 2026-11-04): maas-api (plus our org_id group fix, X11) and
 # maas-controller from MaaS main 0ed0143 (#1816) + PR 1812 0818e91; the MaaS BFF
 # from odh-dashboard main 76982ad (#10541) + PR 10540 ba7d88c, on

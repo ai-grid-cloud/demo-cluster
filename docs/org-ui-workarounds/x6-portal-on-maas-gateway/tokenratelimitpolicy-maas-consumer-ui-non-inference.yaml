@@ -1,0 +1,21 @@
+apiVersion: kuadrant.io/v1alpha1
+kind: TokenRateLimitPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-ui-non-inference
+  namespace: openshift-ingress
+spec:
+  defaults:
+    limits:
+      non-inference:
+        rates:
+          - limit: 0
+            window: 1m
+        when:
+          - predicate: "false"
+    strategy: atomic
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: maas-consumer-ui

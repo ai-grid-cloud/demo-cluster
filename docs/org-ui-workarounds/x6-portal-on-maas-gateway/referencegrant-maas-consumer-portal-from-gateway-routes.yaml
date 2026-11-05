@@ -1,0 +1,16 @@
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-portal-from-gateway-routes
+  namespace: redhat-ods-applications
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: openshift-ingress
+  to:
+    - group: ""
+      kind: Service
+      name: maas-portal

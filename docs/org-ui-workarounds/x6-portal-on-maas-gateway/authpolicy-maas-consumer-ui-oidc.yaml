@@ -1,0 +1,204 @@
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  annotations:
+    auth-proxy-service-url: http://maas-consumer-auth-proxy.openshift-ingress.svc.cluster.local:4180/oauth2/auth
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-ui-oidc
+  namespace: openshift-ingress
+spec:
+  rules:
+    authentication:
+      browser:
+        anonymous: {}
+        metrics: false
+        priority: 1
+        when:
+          - predicate: '!has(request.headers.authorization)'
+      direct-jwt:
+        credentials:
+          authorizationHeader:
+            prefix: Bearer
+        jwt:
+          issuerUrl: https://keycloak-maas-db.apps.ocp.hf299.sandbox3324.opentlc.com/realms/saas
+          ttl: 300
+        metrics: false
+        priority: 0
+    authorization:
+      client-bound:
+        metrics: false
+        patternMatching:
+          patterns:
+            - predicate: has(auth.identity.iss) && auth.identity.iss == 'https://keycloak-maas-db.apps.ocp.hf299.sandbox3324.opentlc.com/realms/saas'
+            - predicate: has(auth.identity.azp) && auth.identity.azp == 'tenant-demo'
+        priority: 1
+        when:
+          - predicate: '!has(auth.identity.anonymous)'
+      require-auth:
+        metrics: false
+        patternMatching:
+          patterns:
+            - predicate: auth.authorization['session-and-identity'].identity.authenticated
+        priority: 1
+      session-and-identity:
+        metrics: false
+        opa:
+          allValues: true
+          rego: |
+            allow = true
+
+            login_location := sprintf("/oauth2/start?rd=%s", [urlquery.encode(input.context.request.http.path)])
+
+            application_cookies := concat("; ", [entry |
+              raw := split(object.get(input.context.request.http.headers, "cookie", ""), ";")[_]
+              entry := trim_space(raw)
+              entry != ""
+              name := trim_space(split(entry, "=")[0])
+              not startswith(name, "_maas_consumer_proxy")
+            ])
+
+            organization = result {
+              org_id := object.get(organization_claims, "org_id", "")
+              is_string(org_id)
+              org_id != ""
+              roles := object.get(organization_claims, "roles", [])
+              is_array(roles)
+              result := {
+                "org_id": org_id,
+                "roles_header": json.marshal(roles)
+              }
+            } else = {"org_id": "", "roles_header": "[]"}
+
+            organization_claims = claims {
+              not input.auth.identity.anonymous
+              claims := input.auth.identity
+            } else = claims {
+              identity.authenticated
+              [_, claims, _] := io.jwt.decode(identity.access_token)
+            } else = {}
+
+            identity = result {
+              not input.auth.identity.anonymous
+              claims := input.auth.identity
+              usernames := [user |
+                user := [object.get(claims, "preferred_username", ""), object.get(claims, "sub", "")][_]
+                user != ""
+              ]
+              username := usernames[0]
+              authorization := input.context.request.http.headers.authorization
+              groups := {trim_space(group) |
+                group := object.get(claims, "groups", [])[_]
+                trim_space(group) != ""
+                trim_space(group) != "system:authenticated"
+              }
+              result := {
+                "authenticated": true,
+                "authorization": authorization,
+                "access_token": trim_prefix(authorization, "Bearer "),
+                "username": username,
+                "email": object.get(claims, "email", ""),
+                "groups_header": json.marshal(array.concat(["system:authenticated"], sort(groups)))
+              }
+            } else = result {
+              input.auth.identity.anonymous
+              cookie := object.get(input.context.request.http.headers, "cookie", "")
+              cookie != ""
+              response := http.send({
+                "method": "GET",
+                "url": "http://maas-consumer-auth-proxy.openshift-ingress.svc.cluster.local:4180/oauth2/auth",
+                "headers": {"Cookie": cookie},
+                "timeout": "2s",
+                "cache": false,
+                "enable_redirect": false,
+                "raise_error": false
+              })
+              {200, 202}[response.status_code]
+              token := object.get(response.headers, "x-auth-request-access-token", [""])[0]
+              usernames := [user |
+                user := [object.get(response.headers, "x-auth-request-preferred-username", [""])[0], object.get(response.headers, "x-auth-request-user", [""])[0]][_]
+                user != ""
+              ]
+              username := usernames[0]
+              token != ""
+              groups := {trim_space(group) |
+                group := split(object.get(response.headers, "x-auth-request-groups", [""])[0], ",")[_]
+                trim_space(group) != ""
+                trim_space(group) != "system:authenticated"
+              }
+              result := {
+                "authenticated": true,
+                "authorization": concat("", ["Bearer ", token]),
+                "access_token": token,
+                "username": username,
+                "email": object.get(response.headers, "x-auth-request-email", [""])[0],
+                "groups_header": json.marshal(array.concat(["system:authenticated"], sort(groups)))
+              }
+            } else = {"authenticated": false}
+        priority: 0
+    response:
+      success:
+        headers:
+          authorization:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].identity.authorization
+            priority: 0
+          cookie:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].application_cookies
+            priority: 0
+          x-auth-request-email:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].identity.email
+            priority: 0
+          x-auth-request-user:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].identity.username
+            priority: 0
+          x-forwarded-access-token:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].identity.access_token
+            priority: 0
+          x-maas-group:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].identity.groups_header
+            priority: 0
+          x-maas-orgid:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].organization.org_id
+            priority: 0
+          x-maas-roles:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].organization.roles_header
+            priority: 0
+          x-maas-username:
+            metrics: false
+            plain:
+              expression: auth.authorization['session-and-identity'].identity.username
+            priority: 0
+      unauthenticated:
+        code: 401
+        message:
+          value: Invalid bearer token
+      unauthorized:
+        code: 302
+        headers:
+          Cache-Control:
+            value: no-store
+          Location:
+            expression: |
+              has(auth.authorization) && 'session-and-identity' in auth.authorization ? auth.authorization['session-and-identity'].login_location : '/oauth2/start?rd=%2Fmaas-portal%2F'
+        message:
+          value: Redirecting to login
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: maas-consumer-ui

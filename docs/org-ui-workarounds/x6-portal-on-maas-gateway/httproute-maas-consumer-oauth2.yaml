@@ -1,0 +1,27 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-oauth2
+  namespace: openshift-ingress
+spec:
+  hostnames:
+    - maas.apps.ocp.bclkw.sandbox2619.opentlc.com
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: maas-default-gateway
+      namespace: openshift-ingress
+      sectionName: http
+  rules:
+    - backendRefs:
+        - group: ""
+          kind: Service
+          name: maas-consumer-auth-proxy
+          port: 4180
+          weight: 1
+      matches:
+        - path:
+            type: PathPrefix
+            value: /oauth2

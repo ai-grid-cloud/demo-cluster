@@ -1,0 +1,18 @@
+apiVersion: kuadrant.io/v1
+kind: AuthPolicy
+metadata:
+  labels:
+    app.kubernetes.io/part-of: maas-consumer-deploy
+  name: maas-consumer-oauth2-anonymous
+  namespace: openshift-ingress
+spec:
+  rules:
+    authentication:
+      public-login:
+        anonymous: {}
+        metrics: false
+        priority: 0
+  targetRef:
+    group: gateway.networking.k8s.io
+    kind: HTTPRoute
+    name: maas-consumer-oauth2

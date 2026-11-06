@@ -3,6 +3,7 @@ kind: MaaSSubscription
 metadata:
   annotations:
     ai-grid/version: "1"
+    maas.opendatahub.io/retain-api-keys-on-delete: "true"
     openshift.io/display-name: r2-sub
   name: r2-sub
   namespace: models-as-a-service

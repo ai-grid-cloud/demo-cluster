@@ -3,6 +3,7 @@ kind: MaaSSubscription
 metadata:
   annotations:
     ai-grid/version: "1"
+    maas.opendatahub.io/retain-api-keys-on-delete: "true"
   name: smollm2-chat-org1
   namespace: models-as-a-service
 spec:

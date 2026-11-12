@@ -6,3 +6,4 @@ resources:
 - ../models/granite-33-2b-instruct/catalog
 - ../models/opt-test/catalog
 - ../models/smollm2-chat/catalog
+- ../models/uat-1112-chris-cpu/catalog

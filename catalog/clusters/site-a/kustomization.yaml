@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - ../../models/e2e-cpu/deployment
 - ../../models/e2e-gpu/deployment
+- ../../models/uat-1112-chris-cpu/deployment

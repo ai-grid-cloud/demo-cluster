@@ -4,6 +4,5 @@ resources:
 - ../models/e2e-cpu/catalog
 - ../models/e2e-gpu/catalog
 - ../models/granite-33-2b-instruct/catalog
-- ../models/night2-opt/catalog
 - ../models/opt-test/catalog
 - ../models/smollm2-chat/catalog

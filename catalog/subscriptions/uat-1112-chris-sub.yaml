@@ -2,8 +2,9 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSSubscription
 metadata:
   annotations:
-    ai-grid/version: "1"
+    ai-grid/version: "2"
     maas.opendatahub.io/retain-api-keys-on-delete: "true"
+    openshift.io/description: pair uat
     openshift.io/display-name: uat-1112-chris-sub
   name: uat-1112-chris-sub
   namespace: models-as-a-service
@@ -26,6 +27,7 @@ apiVersion: maas.opendatahub.io/v1alpha1
 kind: MaaSAuthPolicy
 metadata:
   annotations:
+    openshift.io/description: pair uat
     openshift.io/display-name: uat-1112-chris-sub
   labels:
     ai-grid/subscription: uat-1112-chris-sub
